@@ -1,4 +1,5 @@
 import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import SliderIntro from 'react-native-slider-intro';
 import {useNavigation, useRoute} from '@react-navigation/native';
 import {AirbnbRating, Rating} from 'react-native-ratings';
@@ -17,7 +18,6 @@ import {
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {onShare, showToast} from '../appActivity/methods';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function ProductDetail() {
   const widthWindow = useWindowDimensions().width;
@@ -46,6 +46,7 @@ export default function ProductDetail() {
   const [itemName, setName] = useState('');
   const [itemPrice, setPrice] = useState('');
   const [image, setImage] = useState('');
+  // const [rating, setrating] = useState('');
   const [itemdescription, setDescription] = useState('');
 
   producItemId = route.params ? route.params.itemId : '';
@@ -78,9 +79,32 @@ export default function ProductDetail() {
     ProductDetails();
   }, [producItemId]);
 
-  const rating = rating => {
-    showToast(rating);
-    console.log(rating);
+  const ratingHandler = async ratingss => {
+    console.log('rating Test', ratingss);
+    const rating = ratingss;
+    const ratings = {rating};
+    console.log('Ratings...', typeof ratings);
+    const userEarlierToken = await AsyncStorage.getItem('signupToken');
+    try {
+      const response = await axios.post(
+        'https://e-com-cyber.onrender.com/rating/createrating',
+        ratings,
+        {
+          headers: {
+            authorization: `Bearer ${userEarlierToken}`, // Include JWT token in the header
+          },
+        },
+      );
+      console.log('Rating Res...', response);
+    } catch (error) {
+      console.error('Error retrieving data from AsyncStorage:', error);
+    }
+  };
+
+  const ratings = r => {
+    showToast(r);
+    console.log(r);
+    ratingHandler(r);
   };
 
   async function wishItems() {
@@ -131,7 +155,7 @@ export default function ProductDetail() {
 
                 <View style={styles.listView}>
                   <Rating
-                    onFinishRating={rating}
+                    onFinishRating={ratings}
                     style={{
                       paddingVertical: 10,
                       marginRight: 10,

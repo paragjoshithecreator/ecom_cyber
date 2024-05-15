@@ -11,6 +11,7 @@ import {
   TouchableOpacity,
   useWindowDimensions,
 } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function ServiceList() {
   const [product, setProduct] = useState('');
@@ -23,10 +24,17 @@ export default function ServiceList() {
   }, []);
 
   const products = async () => {
+    const userEarlierToken = await AsyncStorage.getItem('signupToken');
     try {
       setIsLoading(true);
       const response = await axios.get(
         'https://e-com-cyber.onrender.com/category/getallcategory',
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            authorization: `Bearer ${userEarlierToken}`, // Include JWT token in the header
+          },
+        },
       );
       const Category = response.data.categoryData;
       setProduct(Category);

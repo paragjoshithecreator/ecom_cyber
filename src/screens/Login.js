@@ -28,11 +28,6 @@ export default function Login({navigation}) {
         const response = await axios.post(
           'https://e-com-cyber.onrender.com/user/login',
           userAuth,
-          {
-            headers: {
-              authorization: `Bearer ${userEarlierToken}`,
-            },
-          },
         );
 
         console.log('----------------------', response);
