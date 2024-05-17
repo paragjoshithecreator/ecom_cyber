@@ -184,7 +184,7 @@ export const FavItemList = [
 export const ItemData = [
   {
     id: '1',
-    image: require('./assets/img/cloth.png'),
+    image: require('./assets/img/sports.png'),
     name: 'Free Shipping & Reutrns',
     discription: 'For All Order Over $99',
   },

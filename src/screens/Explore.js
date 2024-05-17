@@ -7,13 +7,13 @@ import Filter from '../components/Filter';
 import {useRoute} from '@react-navigation/native';
 import {globalColor} from '../GlobalStyles';
 
-export default function MyCart() {
+export default function Explore() {
   const route = useRoute();
   const id = route.params ? route.params.productId : 'No Product selected Yet';
 
   return (
     <View style={styles.container}>
-      <Filter id={id} />
+      <Filter />
     </View>
   );
 }

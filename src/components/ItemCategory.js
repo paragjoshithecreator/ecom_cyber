@@ -1,7 +1,7 @@
+import axios from 'axios';
+import CatListSection from './CatListSection';
 import {View, StyleSheet} from 'react-native';
 import React, {useEffect, useState} from 'react';
-import CatListSection from './CatListSection';
-import axios from 'axios';
 
 export default function ItemCategory() {
   useEffect(() => {

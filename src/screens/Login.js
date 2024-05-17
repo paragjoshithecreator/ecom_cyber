@@ -30,7 +30,6 @@ export default function Login({navigation}) {
           userAuth,
         );
 
-        console.log('----------------------', response);
         const userToken = response.data.token;
         await AsyncStorage.setItem('userToken', userToken);
         // Handle success
@@ -49,18 +48,6 @@ export default function Login({navigation}) {
       console.error('Error retrieving data from AsyncStorage:', error);
     }
   };
-
-  /* const loginHandler = () => {
-    const user = userInfo.find(
-      user => user.email === email && user.password === password,
-    );
-    if (user) {
-      navigation.replace('Home');
-    } else {
-      console.log('err');
-    }
-    // setUserDetails(user);
-  };  */
 
   const {namePlaceHolder} = strings;
 

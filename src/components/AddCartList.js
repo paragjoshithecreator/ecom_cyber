@@ -1,8 +1,10 @@
 import axios from 'axios';
-import {useNavigation} from '@react-navigation/native';
+import {useNavigation, useRoute} from '@react-navigation/native';
 import SearchBar from './SearchBar';
 import Loader from './Loader';
+import ModalFilter from './ModalFilter';
 import React, {useEffect, useState} from 'react';
+import {strings} from '../language';
 import {
   View,
   Text,
@@ -13,42 +15,43 @@ import {
   Modal,
 } from 'react-native';
 
-export default function AddCartList({listRef, id}) {
-  useEffect(() => {
-    products();
-  }, [id, product]);
-
+export default function AddCartList({listRef}) {
+  const route = useRoute();
+  const id = route.params ? route.params.productId : null;
   const [productsData, setProductData] = useState([]);
   const [product, setProduct] = useState('');
   const navigation = useNavigation();
-  const [isModelVisible, setIsModelVisible] = useState(false);
 
   const [loading, setLoading] = useState(false);
   const [userData, setUserData] = useState([]);
   const [data, setData] = useState([]);
-
+  const [isModelVisible, setisModelVisible] = useState(false);
+  const [category, setCategory] = useState('');
   const [ind, setind] = useState(0);
-  const products = async () => {
+
+  const products = async id => {
     setLoading(true);
+    setCategory(id);
+    console.log('setCatego..... ', category);
     try {
+      const selectedProduct = id.toLowerCase();
+      console.log('This is Category..', selectedProduct);
       const response = await axios.get(
-        'https://e-com-cyber.onrender.com/product/getallproduct',
+        `https://e-com-cyber.onrender.com/product/getallproduct?category=${selectedProduct}`,
       );
 
-      const result = response.data.productData;
+      const result = await response.data.productData;
 
-      const selectedProduct = id.toLowerCase();
+      const final = await result.filter(
+        item => item.category === selectedProduct,
+      );
 
-      const final = result.filter(item => item.category === selectedProduct);
       setProductData(final);
       setUserData(final);
       setData(final);
       setLoading(false);
-
-      // Handle success
     } catch (error) {
       console.error('Product:', error);
-      // Handle error
     }
   };
 
@@ -63,6 +66,21 @@ export default function AddCartList({listRef, id}) {
       setData(tempList);
     }
   };
+  useEffect(() => {
+    products(id);
+  }, [id]);
+
+  const {
+    sortHeading,
+    sortByName,
+    sortBottomToTop,
+    sortTopToBottom,
+    sortByRating,
+    productRating,
+    productPrice,
+  } = strings;
+
+  const modalImage = require('../assets/img/delete.png');
 
   return (
     <View style={styles.mainContainer}>
@@ -92,7 +110,7 @@ export default function AddCartList({listRef, id}) {
               />
               <TouchableOpacity
                 onPress={() => {
-                  setIsModelVisible(true);
+                  setisModelVisible(true);
                 }}>
                 <Image
                   style={{width: 20, height: 20}}
@@ -124,11 +142,17 @@ export default function AddCartList({listRef, id}) {
                     <View style={{justifyContent: 'center'}}>
                       <Text style={styles.heading}>{item.name}</Text>
                       <View style={styles.ratingView}>
-                        <Text style={styles.rateList}>{item.ratings}</Text>
+                        <Text style={styles.rateList}>
+                          {item.ratings}
+                          {productRating}
+                        </Text>
                         <Text style={styles.rateList}>{item.ratingNumber}</Text>
                       </View>
                       <View style={styles.rateView}>
-                        <Text style={styles.heading}>{item.price}</Text>
+                        <Text style={styles.heading}>
+                          {productPrice}
+                          {item.price}
+                        </Text>
                         <Text style={styles.lessText}>{item.less}</Text>
                         <Text style={styles.offText}>{item.off}</Text>
                       </View>
@@ -137,21 +161,6 @@ export default function AddCartList({listRef, id}) {
                       </Text>
                     </View>
                   </TouchableOpacity>
-                  {/*  <View style={styles.innerView}>
-                <AddToCartButton />
-                <SaveRemove
-                  color="gray"
-                  brcolor="gray"
-                  image={require('../assets/img/save.png')}>
-                  Save for later
-                </SaveRemove>
-                <SaveRemove
-                  color="red"
-                  brcolor="red"
-                  image={require('../assets/img/delete.png')}>
-                  Remove
-                </SaveRemove>
-              </View> */}
                 </View>
               )}
               keyExtractor={item => item._id}
@@ -159,71 +168,38 @@ export default function AddCartList({listRef, id}) {
           </View>
         )}
       </View>
-      <View>
-        <Modal
-          style={{
-            justifyContent: 'center',
-          }}
-          transparent
-          visible={isModelVisible}
-          onRequestClose={() => setIsModelVisible(false)}
-          animationType="slide">
-          <View
-            style={{
-              justifyContent: 'center',
-              alignItems: 'center',
-              width: 200,
-              height: 200,
-              backgroundColor: '#378',
-              alignSelf: 'center',
-              marginTop: 200,
-              borderRadius: 10,
-              elevation: 4,
-            }}>
-            <View>
-              <TouchableOpacity
-                onPress={() => {
-                  let tempList = data.sort((a, b) =>
-                    a.name > b.name ? 1 : -1,
-                  );
-                  setData(tempList);
-                  listRef.current?.scrollToIndex({index: 0, animated: true});
-                  setIsModelVisible(false);
-                }}
-                style={{marginVertical: 10}}>
-                <Text style={{color: '#fff'}}>Search By Name</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                onPress={() => {
-                  setData(data.sort((a, b) => a.price - b.price));
-                  listRef.current?.scrollToIndex({index: 0, animated: true});
-                  setIsModelVisible(false);
-                }}
-                style={{marginVertical: 10}}>
-                <Text style={{color: '#fff'}}>Low to High</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                onPress={() => {
-                  setData(data.sort((a, b) => b.price - a.price));
-                  listRef.current?.scrollToIndex({index: 0, animated: true});
-                  setIsModelVisible(false);
-                }}
-                style={{marginVertical: 10}}>
-                <Text style={{color: '#fff'}}>High to Low</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                onPress={() => {
-                  setData(data.sort((a, b) => b.ratings - a.ratings));
-                  listRef.current?.scrollToIndex({index: 0, animated: true});
-                  setIsModelVisible(false);
-                }}
-                style={{marginVertical: 10}}>
-                <Text style={{color: '#fff'}}>Sort BY Rating</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-        </Modal>
-      </View>
+
+      <ModalFilter
+        title={sortHeading}
+        name={sortByName}
+        btotop={sortBottomToTop}
+        ttob={sortTopToBottom}
+        rating={sortByRating}
+        image={modalImage}
+        onPressN={() => {
+          let tempList = data.sort((a, b) => (a.name > b.name ? 1 : -1));
+          setData(tempList);
+          listRef.current?.scrollToIndex({index: 0, animated: true});
+          setisModelVisible(false);
+        }}
+        onPressB={() => {
+          setData(data.sort((a, b) => a.price - b.price));
+          listRef.current?.scrollToIndex({index: 0, animated: true});
+          setisModelVisible(false);
+        }}
+        onPressT={() => {
+          setData(data.sort((a, b) => b.price - a.price));
+          listRef.current?.scrollToIndex({index: 0, animated: true});
+          setisModelVisible(false);
+        }}
+        onPressR={() => {
+          setData(data.sort((a, b) => b.ratings - a.ratings));
+          listRef.current?.scrollToIndex({index: 0, animated: true});
+          setisModelVisible(false);
+        }}
+        visible={isModelVisible}
+        animationType="slide"
+      />
     </View>
   );
 }
@@ -242,7 +218,6 @@ const styles = StyleSheet.create({
   listView: {
     padding: 10,
     borderRadius: 8,
-    // backgroundColor: '#ccc',
     flexDirection: 'row',
   },
 

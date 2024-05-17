@@ -1,8 +1,8 @@
-import {View, Text, FlatList, Image, StyleSheet, Pressable} from 'react-native';
-import React, {useEffect, useState} from 'react';
-import {catData} from '../DummyData';
-import {globalColor} from '../GlobalStyles';
 import axios from 'axios';
+import {globalColor} from '../GlobalStyles';
+import React, {useEffect, useState} from 'react';
+import {View, Text, FlatList, Image, StyleSheet, Pressable} from 'react-native';
+import {catData} from '../DummyData';
 
 export default function CategoryItems() {
   useEffect(() => {
@@ -55,7 +55,8 @@ export default function CategoryItems() {
 }
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: '#9AE2D9',
+    // backgroundColor: '#9AE2D9',
+    backgroundColor: '#ccc',
     marginBottom: 1,
     justifyContent: 'center',
     alignItems: 'center',

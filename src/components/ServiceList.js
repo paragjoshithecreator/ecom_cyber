@@ -1,4 +1,5 @@
 import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useNavigation} from '@react-navigation/native';
 import Loader from './Loader';
 import React, {useEffect, useState} from 'react';
@@ -11,7 +12,6 @@ import {
   TouchableOpacity,
   useWindowDimensions,
 } from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function ServiceList() {
   const [product, setProduct] = useState('');
@@ -32,13 +32,12 @@ export default function ServiceList() {
         {
           headers: {
             'Content-Type': 'application/json',
-            authorization: `Bearer ${userEarlierToken}`, // Include JWT token in the header
+            authorization: `Bearer ${userEarlierToken}`,
           },
         },
       );
       const Category = response.data.categoryData;
       setProduct(Category);
-      // console.log(response.data.categoryData);
       setIsLoading(false);
     } catch (error) {
       console.error('Product:', error);
@@ -55,7 +54,7 @@ export default function ServiceList() {
         renderItem={({item}) => (
           <TouchableOpacity
             onPress={() => {
-              navigation.navigate('MyCart', {
+              navigation.navigate('Explore', {
                 productId: item.name,
               });
             }}

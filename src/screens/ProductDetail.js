@@ -7,6 +7,8 @@ import Loader from '../components/Loader';
 import PrimaryButton from '../components/PrimaryButton';
 import {GlobalStyles, globalColor} from '../GlobalStyles';
 import {strings} from '../language/index';
+import {onShare, showToast} from '../appActivity/methods';
+import React, {useEffect, useState} from 'react';
 import {
   View,
   Text,
@@ -16,8 +18,6 @@ import {
   Image,
   useWindowDimensions,
 } from 'react-native';
-import React, {useEffect, useState} from 'react';
-import {onShare, showToast} from '../appActivity/methods';
 
 export default function ProductDetail() {
   const widthWindow = useWindowDimensions().width;
@@ -80,10 +80,9 @@ export default function ProductDetail() {
   }, [producItemId]);
 
   const ratingHandler = async ratingss => {
-    console.log('rating Test', ratingss);
     const rating = ratingss;
     const ratings = {rating};
-    console.log('Ratings...', typeof ratings);
+
     const userEarlierToken = await AsyncStorage.getItem('signupToken');
     try {
       const response = await axios.post(
@@ -91,11 +90,10 @@ export default function ProductDetail() {
         ratings,
         {
           headers: {
-            authorization: `Bearer ${userEarlierToken}`, // Include JWT token in the header
+            authorization: `Bearer ${userEarlierToken}`, // Include token in the header
           },
         },
       );
-      console.log('Rating Res...', response);
     } catch (error) {
       console.error('Error retrieving data from AsyncStorage:', error);
     }
@@ -117,7 +115,6 @@ export default function ProductDetail() {
         image: image,
       },
     ];
-    // console.log('ARRy', userFavAllData);
 
     try {
       await AsyncStorage.setItem(
@@ -143,14 +140,24 @@ export default function ProductDetail() {
             ) : (
               <View>
                 <View style={styles.imageView}>
-                  {/* <Image style={styles.image} source={{uri: item.image}} /> */}
-                  <SliderIntro
+                  <TouchableOpacity
+                    style={styles.backView}
+                    onPress={() => {
+                      navigation.navigate('Explore');
+                    }}>
+                    <Image
+                      style={{width: 24, height: 24, tintColor: 'red'}}
+                      source={require('../assets/img/back.png')}
+                    />
+                  </TouchableOpacity>
+                  <Image style={styles.image} source={{uri: item.image}} />
+                  {/*   <SliderIntro
                     data={slides}
                     numberOfSlides={1}
                     dotWidth={12}
                     onDone={() => {}}
                     onSkip={() => {}}
-                  />
+                  /> */}
                 </View>
 
                 <View style={styles.listView}>
@@ -270,6 +277,10 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     paddingVertical: 8,
     paddingHorizontal: 8,
+  },
+  backView: {
+    alignSelf: 'flex-start',
+    marginLeft: 10,
   },
   imageView: {
     width: '100%',

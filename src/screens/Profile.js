@@ -56,7 +56,11 @@ export default function Profile() {
         <TouchableOpacity style={styles.orderView}>
           <Text style={styles.text}>Your Order</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.orderView}>
+        <TouchableOpacity
+          style={styles.orderView}
+          onPress={() => {
+            navigation.navigate('WishList');
+          }}>
           <Text style={styles.text}>Wishlist</Text>
         </TouchableOpacity>
       </View>

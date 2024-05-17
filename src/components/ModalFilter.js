@@ -9,14 +9,20 @@ import {
   TouchableOpacity,
 } from 'react-native';
 
-export default function ModalCom({
+export default function ModalFilter({
   visible,
   onRequestClose,
   animationType,
   title,
-  onPress,
-  metaData,
+  onPressN,
+  onPressB,
+  onPressT,
+  onPressR,
   image,
+  name,
+  btotop,
+  ttob,
+  rating,
 }) {
   return (
     <View>
@@ -27,11 +33,21 @@ export default function ModalCom({
         animationType={animationType}>
         <View style={styles.root}>
           <View style={styles.innerContainer}>
-            <Text style={GlobalStyles.subHeading}>{title}</Text>
-            <TouchableOpacity onPress={onPress} style={styles.removeView}>
-              <Image style={styles.image} source={image} />
-              <Text style={styles.removeText}>{metaData}</Text>
-            </TouchableOpacity>
+            <Text style={GlobalStyles.heading}>{title}</Text>
+            <View style={styles.removeView}>
+              <TouchableOpacity style={styles.space} onPress={onPressN}>
+                <Text style={styles.removeText}>{name}</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.space} onPress={onPressB}>
+                <Text style={styles.removeText}>{btotop}</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.space} onPress={onPressT}>
+                <Text style={styles.removeText}>{ttob}</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.space} onPress={onPressR}>
+                <Text style={styles.removeText}>{rating}</Text>
+              </TouchableOpacity>
+            </View>
           </View>
         </View>
       </Modal>
@@ -42,10 +58,8 @@ const styles = StyleSheet.create({
   root: {
     flex: 1,
     justifyContent: 'flex-end',
-    alignItems: 'center',
   },
   innerContainer: {
-    height: 100,
     width: '100%',
     backgroundColor: globalColor.white,
     justifyContent: 'space-evenly',
@@ -54,9 +68,8 @@ const styles = StyleSheet.create({
     elevation: 20,
   },
   removeView: {
-    flexDirection: 'row',
     justifyContent: 'center',
-    alignItems: 'center',
+    marginVertical: 10,
   },
   image: {
     width: 24,
@@ -64,10 +77,13 @@ const styles = StyleSheet.create({
     tintColor: 'red',
     marginRight: 5,
   },
+  space: {
+    marginVertical: 5,
+  },
   removeText: {
     fontSize: 16,
     fontWeight: '400',
-    textAlign: 'center',
-    color: 'red',
+    textAlign: 'left',
+    color: 'green',
   },
 });

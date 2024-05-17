@@ -1,7 +1,8 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useRoute} from '@react-navigation/native';
+import ModalCom from './ModalCom';
+import {strings} from '../language';
 import React, {useEffect, useState} from 'react';
-import AddToCartButton from '../screens/AddToCartButton';
 import {
   View,
   Text,
@@ -14,6 +15,7 @@ import {
 export default function FavWishList() {
   const route = useRoute();
   const [userFav, setUserFav] = useState([]);
+  const [remove, setRemove] = useState(false);
 
   const userFavHandler = async () => {
     const favItemDetails = await AsyncStorage.getItem('favItemDetails');
@@ -21,7 +23,7 @@ export default function FavWishList() {
 
     if (itemData) {
       setUserFav(itemData);
-      
+
       console.log('IN IF', itemData);
     }
   };
@@ -40,6 +42,9 @@ export default function FavWishList() {
     );
   };
 
+  const {productPrice, modalHeading, modalMetaData} = strings;
+  const modalImage = require('../assets/img/delete.png');
+
   return (
     <View style={styles.mainContainer}>
       <View style={styles.innerContainer}>
@@ -47,10 +52,14 @@ export default function FavWishList() {
           numColumns={2}
           data={userFav}
           renderItem={({item}) => (
-            <View style={styles.spaceSection}>
+            <TouchableOpacity style={styles.spaceSection} onPress={() => {}}>
               <View style={styles.listView}>
                 <TouchableOpacity
-                  onPress={() => {} /* removeFromFav(item.itemId) */}>
+                  onPress={
+                    () => {
+                      setRemove(true);
+                    } /* removeFromFav(item.itemId) */
+                  }>
                   <Image
                     style={styles.image}
                     source={require('../assets/img/delete.png')}
@@ -59,25 +68,30 @@ export default function FavWishList() {
                 <View style={styles.imageView}>
                   <Image style={styles.imageTow} source={{uri: item.image}} />
                 </View>
+                <Text style={styles.heading}>{item.itemName}</Text>
+                <Text style={styles.rateList} numberOfLines={1}>
+                  {item.itemdescription}
+                </Text>
+                <Text style={[styles.rateList, {color: 'green'}]}>
+                  {productPrice} {item.itemPrice}
+                </Text>
+                <Text style={{color: '#000'}}>{item._id}</Text>
               </View>
-              <Text style={styles.heading}>{item.itemName}</Text>
-              <View style={styles.ratingView}>
-                <Text style={styles.rateList}>{item.itemPrice}</Text>
-                <Text style={styles.rateList}>{item.itemPrice}</Text>
-              </View>
-              <View style={styles.rateView}>
-                <Text style={styles.heading}>{item.rate}</Text>
-                <Text style={styles.lessText}>{item.less}</Text>
-                <Text style={styles.offText}>{item.off}</Text>
-              </View>
-              <View style={styles.innerView}>
-                <AddToCartButton onPress={addToFav} price={item.price} />
-              </View>
-            </View>
+            </TouchableOpacity>
           )}
           keyExtractor={item => item.itemId}
         />
       </View>
+      <ModalCom
+        title={modalHeading}
+        metaData={modalMetaData}
+        image={modalImage}
+        onPress={() => {
+          setRemove(false);
+        }}
+        visible={remove}
+        animationType="slide"
+      />
     </View>
   );
 }
@@ -88,6 +102,8 @@ const styles = StyleSheet.create({
   },
   heading: {
     color: '#000',
+    fontSize: 16,
+    alignSelf: 'center',
   },
   innerContainer: {
     paddingBottom: '2%',
@@ -95,8 +111,8 @@ const styles = StyleSheet.create({
   listView: {
     borderRadius: 10,
     width: 185,
-    height: 200,
-    backgroundColor: '#ccc',
+    // height: 200,
+    backgroundColor: '#fff',
     marginHorizontal: 10,
     marginVertical: '2%',
   },
@@ -113,8 +129,16 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   imageTow: {
+    width: 120,
+    height: 120,
+    borderRadius: 10,
     alignSelf: 'center',
-    width: 100,
-    height: 100,
+    resizeMode: 'contain',
+  },
+  rateList: {
+    fontSize: 12,
+    color: '#000',
+    marginVertical: 5,
+    marginLeft: 10,
   },
 });

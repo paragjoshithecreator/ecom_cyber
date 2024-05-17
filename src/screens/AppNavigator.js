@@ -10,11 +10,12 @@ import Home from './Home';
 import WishList from './WishList';
 import AllCategories from './AllCategories';
 import EditProfile from './EditProfile';
-import MyCart from './MyCart';
+import MyCart from './Explore';
 import Profile from './Profile';
 import React, {useEffect, useState} from 'react';
 import {Image} from 'react-native';
 import ProductDetail from './ProductDetail';
+import Explore from './Explore';
 import Chat from './Chat';
 
 const Stack = createNativeStackNavigator();
@@ -30,7 +31,7 @@ const DrawerNav = () => {
         options={{headerTitleAlign: 'center', title: 'DashBoard'}}
       />
       <Drawer.Screen name="Home" component={Home} />
-      <Drawer.Screen name="MyCart" component={MyCart} />
+      <Drawer.Screen name="Explore" component={Explore} />
       <Drawer.Screen name="Profile" component={Profile} />
       <Drawer.Screen
         name="ProductDetail"
@@ -53,7 +54,7 @@ const Auth = () => {
       screenOptions={{
         headerShown: false,
       }}>
-      {/* <Bottom.Screen
+      {/*  <Bottom.Screen
         name="Chat"
         component={Chat}
         options={{
@@ -85,14 +86,14 @@ const Auth = () => {
       />
 
       <Bottom.Screen
-        name="MyCart"
-        component={MyCart}
+        name="Explore"
+        component={Explore}
         options={{
           tabBarIcon: ({tintColor}) => (
             <Image
               tintColor={'#AA336A'}
               style={{width: 24, height: 24}}
-              source={require('../assets/img/shop.png')}
+              source={require('../assets/img/explore.png')}
             />
           ),
           tabBarInactiveTintColor: '#fff',
