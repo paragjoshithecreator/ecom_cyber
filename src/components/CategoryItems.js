@@ -29,27 +29,29 @@ export default function CategoryItems() {
 
   return (
     <View>
-      <FlatList
-        data={product}
-        renderItem={({item, index}) => (
-          <Pressable
-            onPress={() => {
-              console.log('pressed');
-              setIspressed(true);
-            }}
-            style={({pressed}) =>
-              pressed ? styles.bgColor : styles.container
-            }>
-            <Image
-              source={{uri: item.image}}
-              style={styles.image}
-              resizeMode="cover"
-            />
-            <Text style={styles.categoryText}>{item.name}</Text>
-          </Pressable>
-        )}
-        keyExtractor={(item, index) => index.toString()}
-      />
+      {!isLoading ? (
+        <FlatList
+          data={product}
+          renderItem={({item, index}) => (
+            <Pressable
+              onPress={() => {
+                console.log('pressed');
+                setIspressed(true);
+              }}
+              style={({pressed}) =>
+                pressed ? styles.bgColor : styles.container
+              }>
+              <Image
+                source={{uri: item.image}}
+                style={styles.image}
+                resizeMode="cover"
+              />
+              <Text style={styles.categoryText}>{item.name}</Text>
+            </Pressable>
+          )}
+          keyExtractor={(item, index) => index.toString()}
+        />
+      ) : null}
     </View>
   );
 }

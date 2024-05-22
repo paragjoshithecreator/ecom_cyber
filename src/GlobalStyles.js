@@ -1,4 +1,5 @@
 import {StyleSheet} from 'react-native';
+import {green} from 'react-native-reanimated/lib/typescript/reanimated2/Colors';
 
 export const globalColor = {
   black: '#000000',
@@ -8,6 +9,8 @@ export const globalColor = {
   gray: 'gray',
   gray700: '#221c30',
   accent500: '#e6b30b',
+  orange: '#fb7200',
+  green: 'green',
 };
 
 export const GlobalStyles = StyleSheet.create({
@@ -19,6 +22,7 @@ export const GlobalStyles = StyleSheet.create({
   },
   subHeading: {
     fontSize: 16,
+    fontWeight: '400',
     color: globalColor.black,
     textAlign: 'center',
   },
@@ -27,12 +31,12 @@ export const GlobalStyles = StyleSheet.create({
     height: 50,
     borderRadius: 10,
     alignSelf: 'center',
-    backgroundColor: globalColor.button,
+    backgroundColor: globalColor.orange,
     justifyContent: 'center',
     marginTop: 5,
   },
   buttonStyles: {
-    color: globalColor.white,
+    color: '#fff',
     fontSize: 16,
     fontWeight: '500',
     textAlign: 'center',
@@ -43,31 +47,33 @@ export const GlobalStyles = StyleSheet.create({
     marginTop: 5,
     borderRadius: 10,
     alignSelf: 'center',
-    backgroundColor: globalColor.button,
+    backgroundColor: globalColor.orange,
     justifyContent: 'center',
     opacity: 0.6,
   },
   inputView: {
     width: '90%',
-    backgroundColor: '#fff',
-    borderRadius: 10,
-    alignSelf: 'center',
+    borderWidth: 1,
+    borderRadius: 7,
     marginVertical: 10,
     paddingLeft: 10,
-    borderWidth: 1,
+    backgroundColor: '#fff',
+    borderColor: 'orange',
+    alignSelf: 'center',
   },
   inputPassView: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
     width: '90%',
-    backgroundColor: '#fff',
-    borderRadius: 10,
-    alignSelf: 'center',
+    borderRadius: 7,
     marginVertical: 10,
     paddingLeft: 10,
     borderWidth: 1,
     paddingRight: 10,
+    borderColor: 'orange',
+    backgroundColor: '#fff',
+    flexDirection: 'row',
+    alignItems: 'center',
+    alignSelf: 'center',
+    justifyContent: 'space-between',
   },
   inputColor: {
     color: globalColor.black,
@@ -78,7 +84,13 @@ export const GlobalStyles = StyleSheet.create({
   },
   loginHeading: {
     alignSelf: 'flex-end',
-    marginRight: '8%',
+    marginRight: 10,
     color: '#000000',
+    marginVertical: 10,
+  },
+  error: {
+    color: 'red',
+    fontSize: 14,
+    alignSelf: 'flex-end',
   },
 });

@@ -8,6 +8,7 @@ import {
   Image,
   TouchableOpacity,
 } from 'react-native';
+import AddButton from './AddButton';
 
 export default function ModalCom({
   visible,
@@ -17,6 +18,8 @@ export default function ModalCom({
   onPress,
   metaData,
   image,
+  onPressYes,
+  onPressNo,
 }) {
   return (
     <View>
@@ -28,10 +31,14 @@ export default function ModalCom({
         <View style={styles.root}>
           <View style={styles.innerContainer}>
             <Text style={GlobalStyles.subHeading}>{title}</Text>
-            <TouchableOpacity onPress={onPress} style={styles.removeView}>
+            <TouchableOpacity style={styles.removeView}>
               <Image style={styles.image} source={image} />
               <Text style={styles.removeText}>{metaData}</Text>
             </TouchableOpacity>
+            <View style={{flexDirection: 'row'}}>
+              <AddButton onPress={onPressYes} title={'Yes'} />
+              <AddButton onPress={onPressNo} title={'No'} />
+            </View>
           </View>
         </View>
       </Modal>
@@ -45,7 +52,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   innerContainer: {
-    height: 100,
+    height: 200,
     width: '100%',
     backgroundColor: globalColor.white,
     justifyContent: 'space-evenly',
@@ -69,5 +76,13 @@ const styles = StyleSheet.create({
     fontWeight: '400',
     textAlign: 'center',
     color: 'red',
+  },
+  yesNo: {
+    fontSize: 16,
+    fontWeight: '400',
+    textAlign: 'center',
+    color: '#000',
+    marginRight: 10,
+    marginBottom: 20,
   },
 });

@@ -25,15 +25,33 @@ export default function ProductDetail() {
   const slides = [
     {
       index: 1,
+      title: 'phone1',
       image: require('../assets/img/iphone.jpg'),
     },
     {
-      image: require('../assets/img/iphone6.jpg'),
       index: 2,
+      title: 'phone2',
+      image: require('../assets/img/bglogin.png'),
     },
     {
-      image: require('../assets/img/iphone15.jpg'),
       index: 3,
+      title: 'phone3',
+      image: require('../assets/img/bgShope.jpeg'),
+    },
+    {
+      index: 4,
+      title: 'phone3',
+      image: require('../assets/img/iphone15.jpg'),
+    },
+    {
+      index: 5,
+      title: 'phone3',
+      image: require('../assets/img/iphone6.jpg'),
+    },
+    {
+      index: 6,
+      title: 'phone3',
+      image: require('../assets/img/bgShope.jpeg'),
     },
   ];
 
@@ -151,7 +169,7 @@ export default function ProductDetail() {
                     />
                   </TouchableOpacity>
                   <Image style={styles.image} source={{uri: item.image}} />
-                  {/*   <SliderIntro
+                  {/*  <SliderIntro
                     data={slides}
                     numberOfSlides={1}
                     dotWidth={12}
@@ -174,7 +192,7 @@ export default function ProductDetail() {
                     style={{alignSelf: 'flex-end'}}
                     onPress={() => {
                       // setModal(true);
-                      rating();
+                      ratings();
                     }}></TouchableOpacity>
                   <Text
                     style={[

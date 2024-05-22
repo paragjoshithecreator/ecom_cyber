@@ -3,7 +3,14 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useDispatch, useSelector} from 'react-redux';
 import {addUser} from '../redux/UserSlice';
 import React, {useEffect, useState} from 'react';
-import {View, Alert, StyleSheet, Image, Text} from 'react-native';
+import {
+  View,
+  Alert,
+  StyleSheet,
+  Image,
+  Text,
+  ImageBackground,
+} from 'react-native';
 import Input from '../components/Input';
 import PrimaryButton from '../components/PrimaryButton';
 import {GlobalStyles, globalColor} from '../GlobalStyles';
@@ -16,30 +23,20 @@ export default function SignUp({navigation}) {
   const [userName, setUserName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [error, setError] = useState(false);
-  const [errorE, setErrorE] = useState(false);
-  const [errorP, setErrorP] = useState(false);
+  const [mobile, setMobile] = useState('');
+  const [address, setAddress] = useState('');
+  const [errorUserName, setErrorUserName] = useState(false);
+  const [errorEmail, setErrorEmail] = useState(false);
+  const [errorMobile, setErrorMobile] = useState(false);
+  const [errorAddress, setErrorAddress] = useState(false);
+  const [errorPassword, setErrorPassword] = useState(false);
   const dispatch = useDispatch();
   const userInfo = useSelector(state => state.user);
   const [loading, setLoading] = useState(false);
   const [token, setToken] = useState('');
-
-  const signUp = async () => {
-    const userData = {userName, email, password};
-    console.log(userData);
-    try {
-      const response = await axios.post(
-        'https://e-com-cyber.onrender.com/signup',
-        userData,
-      );
-
-      console.log(response.data);
-      // Handle success
-    } catch (error) {
-      console.error('Sign-up failed:', error);
-      // Handle error
-    }
-  };
+  const [errorMessageEmpty, setErrorMessageEmpty] = useState('');
+  const [invalidEntry, setInvalidEntry] = useState('');
+  const [alreadyRegistered, setAlreadyRegistered] = useState('');
 
   const isUserAuth = async () => {
     const useToken = await AsyncStorage.getItem('userToken');
@@ -52,21 +49,22 @@ export default function SignUp({navigation}) {
   }, []);
 
   const submitHandler = async index => {
-    const userData = {userName, email, password};
+    const userData = {userName, email, password, address, mobile};
     const registeredEmails = userInfo.data.map(user => user.email);
 
-    if (email !== '' && password !== '' && userName !== '') {
-      console.log('entered empty');
+    if ((email !== '' && password !== '' && userName !== '', mobile !== '')) {
+      setErrorMessageEmpty('');
       let emails = validateEmail(email);
       console.log(emails);
       let passwords = validatePassword(password);
       console.log(passwords);
       if (emails && passwords) {
+        setInvalidEntry('');
         if (
           registeredEmails.includes(email) ||
           registeredEmails.includes(email) == null
         ) {
-          Alert.alert('Already registered');
+          setAlreadyRegistered(alreadyRegisteredmessage);
         } else {
           setLoading(true);
           // Dispatch action to add user
@@ -80,12 +78,13 @@ export default function SignUp({navigation}) {
 
             console.log('TOKEN SIGN : ', response.data.token);
             const userToken = response.data.token;
-            await AsyncStorage.setItem('signupToken', userToken);
-            dispatch(addUser({userName, email, password}));
+            const jsonValue = JSON.stringify(userToken);
+            await AsyncStorage.setItem('userToken', jsonValue);
+            dispatch(addUser({userName, email, password, mobile, address}));
             // Handle success
             await AsyncStorage.setItem(
               'userData',
-              JSON.stringify({userName, email, password}),
+              JSON.stringify({userName, email, password, mobile, address}),
             );
             setLoading(false);
             navigation.replace('LogIn');
@@ -94,107 +93,172 @@ export default function SignUp({navigation}) {
           }
         }
       } else {
-        Alert.alert('invalid email or password');
+        setInvalidEntry(invalid);
       }
     } else {
-      Alert.alert('Already registered!');
+      setErrorMessageEmpty(errorMessageEmpty);
     }
     console.log(userInfo);
   };
 
-  const {namePlaceHolder, emailPlaceHolder, passwordPlaceHolder} = strings;
+  const {
+    registerHeading,
+    registerSubheading,
+    namePlaceHolder,
+    emailPlaceHolder,
+    passwordPlaceHolder,
+    errorMessage,
+    registerButton,
+    switchMessage,
+    switchScreen,
+    invalid,
+    alreadyRegisteredmessage,
+    mobileplaceholder,
+    addressplaceholder,
+  } = strings;
+
+  const bgImage = require('../assets/img/bglogin.png');
 
   return (
-    <View style={styles.container}>
-      <View>
-        <Loader animating={loading} color={'red'} size={'large'} />
-        <Text style={GlobalStyles.heading}>Create an account</Text>
-        <Text style={GlobalStyles.subHeading}>
-          Connect with your friends today!
-        </Text>
-      </View>
-      <View style={styles.space}>
-        <Input
-          placeholder={namePlaceHolder}
-          onChangeText={txt => {
-            setUserName(txt.trim(), true);
-          }}
-          onBlur={() => {
-            if (userName == '') {
-              setError(true);
-            } else {
-              setError(false);
-            }
-          }}
-          value={userName}
-        />
-        {error ? <Text style={styles.error}>Empty</Text> : null}
-        <Input
-          placeholder={emailPlaceHolder}
-          onChangeText={txt => {
-            setEmail(txt.trim(), true);
-          }}
-          value={email}
-          onBlur={() => {
-            if (email == '') {
-              setErrorE(true);
-            } else {
-              setErrorE(false);
-            }
-          }}
-        />
-        {errorE ? <Text style={styles.error}>Empty</Text> : null}
-        <TextInputPass
-          placeholder={passwordPlaceHolder}
-          secureTextEntry={true}
-          onChangeText={txt => {
-            setPassword(txt.trim(), true);
-          }}
-          value={password}
-          onBlur={() => {
-            if (password == '') {
-              setErrorP(true);
-            } else {
-              setErrorP(false);
-            }
-          }}
-        />
-        {errorP ? <Text style={styles.error}>Empty</Text> : null}
-        <PrimaryButton onPress={submitHandler}>SUBMIT</PrimaryButton>
-        <View style={styles.page}>
-          <Text style={GlobalStyles.loginHeading}>
-            Already have an account?
-            <Text
-              onPress={() => {
-                navigation.replace('LogIn');
-              }}
-              style={styles.page}>
-              {'  '}
-              Login
+    <ImageBackground source={bgImage} style={styles.container}>
+      <View style={styles.innerContainer}>
+        <View>
+          <Loader animating={loading} color={'red'} size={'large'} />
+          <Text style={GlobalStyles.heading}>{registerHeading}</Text>
+          <Text style={GlobalStyles.subHeading}>{registerSubheading}</Text>
+        </View>
+        <View style={styles.space}>
+          <Input
+            placeholder={namePlaceHolder}
+            onChangeText={txt => {
+              setUserName(txt.trim(), true);
+            }}
+            onBlur={() => {
+              if (userName == '') {
+                setErrorUserName(true);
+              } else {
+                setErrorUserName(false);
+              }
+            }}
+            value={userName}
+          />
+          {errorUserName ? (
+            <Text style={GlobalStyles.error}>{errorMessage}</Text>
+          ) : null}
+          <Input
+            placeholder={emailPlaceHolder}
+            onChangeText={txt => {
+              setEmail(txt.trim(), true);
+            }}
+            value={email}
+            onBlur={() => {
+              if (email == '') {
+                setErrorEmail(true);
+              } else {
+                setErrorEmail(false);
+              }
+            }}
+          />
+          {errorEmail ? (
+            <Text style={GlobalStyles.error}>{errorMessage}</Text>
+          ) : null}
+          <TextInputPass
+            placeholder={passwordPlaceHolder}
+            secureTextEntry={true}
+            onChangeText={txt => {
+              setPassword(txt.trim(), true);
+            }}
+            value={password}
+            onBlur={() => {
+              if (password == '') {
+                setErrorPassword(true);
+              } else {
+                setErrorPassword(false);
+              }
+            }}
+          />
+          <Input
+            placeholder={mobileplaceholder}
+            maxLength={10}
+            onChangeText={txt => {
+              setMobile(txt);
+            }}
+            value={mobile}
+            onBlur={() => {
+              if (password == '') {
+                setErrorMobile(true);
+              } else {
+                setErrorMobile(false);
+              }
+            }}
+          />
+          {errorMobile ? <Text>{errorMessage}</Text> : null}
+          <Input
+            placeholder={addressplaceholder}
+            onBlur={() => {
+              if (password == '') {
+                setErrorAddress(true);
+              } else {
+                setErrorAddress(false);
+              }
+            }}
+            onChangeText={txt => {
+              setAddress(txt);
+            }}
+            value={address}
+          />
+          {errorPassword ? (
+            <Text style={GlobalStyles.error}>{errorMessage}</Text>
+          ) : null}
+          {errorMessageEmpty ? (
+            <Text style={GlobalStyles.error}>{errorMessage}</Text>
+          ) : null}
+          {invalidEntry ? (
+            <Text style={GlobalStyles.error}>{invalid}</Text>
+          ) : null}
+          {alreadyRegistered ? (
+            <Text style={GlobalStyles.error}>{alreadyRegisteredmessage}</Text>
+          ) : null}
+          <PrimaryButton onPress={submitHandler}>
+            {registerButton}
+          </PrimaryButton>
+          <View style={styles.page}>
+            <Text style={GlobalStyles.loginHeading}>
+              {switchMessage}
+              <Text
+                onPress={() => {
+                  navigation.replace('LogIn');
+                }}
+                style={styles.page}>
+                {'  '}
+                {switchScreen}
+              </Text>
             </Text>
-          </Text>
+          </View>
         </View>
       </View>
-    </View>
+    </ImageBackground>
   );
 }
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
-    paddingTop: 30,
-    // justifyContent: 'center',
+    justifyContent: 'center',
   },
-  error: {
-    marginLeft: '5%',
-    color: 'red',
-    fontSize: 14,
+  innerContainer: {
+    backgroundColor: '#fff',
+    marginHorizontal: 10,
+    borderRadius: 10,
   },
+
   space: {
     paddingVertical: '10%',
+    paddingHorizontal: 20,
   },
   page: {
     paddingVertical: '2%',
     color: globalColor.button,
+    fontSize: 16,
   },
 });

@@ -6,34 +6,42 @@ import {
   TouchableOpacity,
   ToastAndroid,
   Linking,
+  Modal,
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
 import PrimaryButton from '../components/PrimaryButton';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useNavigation} from '@react-navigation/native';
 import {useSelector} from 'react-redux';
+import ModalCom from '../components/ModalCom';
+import axios from 'axios';
 
 export default function Profile() {
+  const [token, setToken] = useState('');
   const navigation = useNavigation();
   const [email, setEmail] = useState('');
+  // const [deleteAccount, setDeleteAccount] = useState(false);
+  const [modelVisible, setModelVisible] = useState(false);
 
   const userInfo = async () => {
+    const userToken = await AsyncStorage.getItem('userToken');
+    setToken(userToken);
     try {
       const userProfile = await AsyncStorage.getItem('userData');
       const email = JSON.parse(userProfile).email;
       setEmail(email);
-      console.log('reun', typeof email);
     } catch (error) {
       console.log(error);
     }
   };
 
   const clearToken = async () => {
+    const keys = ['userData', 'userToken'];
     try {
-      await AsyncStorage.removeItem('userToken');
+      await AsyncStorage.multiRemove(keys);
       console.log('Token cleared successfully');
       navigation.navigate('LogIn');
-      ToastAndroid.show('Logout Successfully...');
+      // ToastAndroid.show('Logout Successfully...');
     } catch (error) {
       console.error('Error clearing token:', error);
     }
@@ -41,8 +49,26 @@ export default function Profile() {
 
   useEffect(() => {
     userInfo();
-  }, [email]);
+  }, []);
 
+  const deleteAccountHandler = async () => {
+    setModelVisible(false);
+    console.log('INNER', token);
+    try {
+      const response = await axios.delete(
+        'https://e-com-cyber.onrender.com/user/deleteuser',
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            authorization: `Bearer ${token}`,
+          },
+        },
+      );
+      clearToken();
+    } catch (error) {
+      console.log(error);
+    }
+  };
   return (
     <View style={styles.mainContainer}>
       <View style={styles.innerView}>
@@ -147,7 +173,7 @@ export default function Profile() {
             style={styles.imageSetting}
             source={require('../assets/img/profile.png')}
           />
-          <Text style={styles.textSetting}>Notifications Settings</Text>
+          <Text style={styles.textSetting}>Settings</Text>
         </View>
         <TouchableOpacity style={styles.settingImageCenter}>
           <Image
@@ -165,9 +191,13 @@ export default function Profile() {
             style={styles.imageSetting}
             source={require('../assets/img/like.png')}
           />
-          <Text style={styles.textSetting}>Reviews</Text>
+          <Text style={styles.textSetting}>Delete Account</Text>
         </View>
-        <TouchableOpacity style={styles.settingImageCenter}>
+        <TouchableOpacity
+          onPress={() => {
+            setModelVisible(true);
+          }}
+          style={styles.settingImageCenter}>
           <Image
             style={styles.imageSetting}
             source={require('../assets/img/right_arrow.png')}
@@ -182,6 +212,7 @@ export default function Profile() {
           />
           <Text style={styles.textSetting}>Contect us</Text>
         </View>
+
         <TouchableOpacity
           onPress={async () => {
             try {
@@ -198,6 +229,16 @@ export default function Profile() {
         </TouchableOpacity>
       </View>
       <PrimaryButton onPress={clearToken}>LogOut</PrimaryButton>
+      <ModalCom
+        metaData={'want to delete'}
+        title={'Are You Sure!'}
+        visible={modelVisible}
+        onPressNo={() => {
+          setModelVisible(false);
+        }}
+        onPressYes={deleteAccountHandler}
+        image={require('../assets/img/delete.png')}
+      />
     </View>
   );
 }

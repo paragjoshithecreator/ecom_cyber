@@ -10,13 +10,12 @@ import Home from './Home';
 import WishList from './WishList';
 import AllCategories from './AllCategories';
 import EditProfile from './EditProfile';
-import MyCart from './Explore';
 import Profile from './Profile';
 import React, {useEffect, useState} from 'react';
-import {Image} from 'react-native';
+import {Image, TouchableOpacity, Text, View} from 'react-native';
 import ProductDetail from './ProductDetail';
 import Explore from './Explore';
-import Chat from './Chat';
+import MyCart from './MyCart';
 
 const Stack = createNativeStackNavigator();
 const Bottom = createBottomTabNavigator();
@@ -24,7 +23,43 @@ const Drawer = createDrawerNavigator();
 
 const DrawerNav = () => {
   return (
-    <Drawer.Navigator initialRouteName="DashBoard">
+    <Drawer.Navigator
+      initialRouteName="DashBoard"
+      screenOptions={{
+        headerRight: () => {
+          return (
+            <TouchableOpacity
+              style={{
+                marginRight: 10,
+                justifyContent: 'center',
+                alignItems: 'flex-end',
+              }}
+              onPress={() => {}}>
+              <View
+                style={{
+                  width: 18,
+                  height: 18,
+                  backgroundColor: 'red',
+                  justifyContent: 'center',
+                  alignItems: 'flex-end',
+                  borderRadius: 20,
+                }}>
+                <Text
+                  style={{
+                    color: '#FFF',
+                    alignSelf: 'center',
+                  }}>
+                  0
+                </Text>
+              </View>
+              <Image
+                style={{width: 24, height: 24, marginRight: 10}}
+                source={require('../assets/img/shop.png')}
+              />
+            </TouchableOpacity>
+          );
+        },
+      }}>
       <Drawer.Screen
         name="Auth"
         component={Auth}
@@ -32,14 +67,21 @@ const DrawerNav = () => {
       />
       <Drawer.Screen name="Home" component={Home} />
       <Drawer.Screen name="Explore" component={Explore} />
+      <Drawer.Screen name="MyCart" component={MyCart} />
+      <Drawer.Screen name="WishList" component={WishList} />
       <Drawer.Screen name="Profile" component={Profile} />
+      <Drawer.Screen
+        name="EditProfile"
+        component={EditProfile}
+        options={{headerShown: false, drawerLabel: () => null}}
+      />
       <Drawer.Screen
         name="ProductDetail"
         component={ProductDetail}
         options={{headerShown: false, drawerLabel: () => null}}
       />
       <Drawer.Screen
-        name="LogIn"
+        name="Login"
         component={Login}
         options={{headerShown: false, drawerLabel: () => null}}
       />
@@ -54,18 +96,6 @@ const Auth = () => {
       screenOptions={{
         headerShown: false,
       }}>
-      {/*  <Bottom.Screen
-        name="Chat"
-        component={Chat}
-        options={{
-          tabBarIcon: () => (
-            <Image
-              source={require('../assets/img/like.png')}
-              style={{width: 24, height: 24}}
-            />
-          ),
-        }}
-      /> */}
       <Bottom.Screen
         name="Home"
         component={Home}
@@ -120,6 +150,23 @@ const Auth = () => {
         }}
       />
       <Bottom.Screen
+        name="MyCart"
+        component={MyCart}
+        options={{
+          tabBarIcon: ({tintColor}) => (
+            <Image
+              tintColor={'#AA336A'}
+              style={{width: 24, height: 24}}
+              source={require('../assets/img/shop.png')}
+            />
+          ),
+          tabBarInactiveTintColor: '#fff',
+          tabBarActiveTintColor: '#AA336A',
+          tabBarInactiveBackgroundColor: '#fff',
+          tabBarActiveBackgroundColor: 'orange',
+        }}
+      />
+      {/*  <Bottom.Screen
         name="WishList"
         component={WishList}
         options={{
@@ -136,7 +183,7 @@ const Auth = () => {
           tabBarInactiveBackgroundColor: '#fff',
           tabBarActiveBackgroundColor: 'orange',
         }}
-      />
+      />  */}
       <Bottom.Screen
         name="Profile"
         component={Profile}

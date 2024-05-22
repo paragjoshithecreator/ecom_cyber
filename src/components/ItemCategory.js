@@ -2,6 +2,7 @@ import axios from 'axios';
 import CatListSection from './CatListSection';
 import {View, StyleSheet} from 'react-native';
 import React, {useEffect, useState} from 'react';
+import Loader from './Loader';
 
 export default function ItemCategory() {
   useEffect(() => {
@@ -28,36 +29,41 @@ export default function ItemCategory() {
 
   return (
     <View style={styles.continer}>
-      <View style={styles.gap}></View>
-      <View style={styles.listsectionOne}>
-        <CatListSection
-          categoryData={product}
-          horizontal={false}
-          numColumns={3}
-          title="Television"
-        />
-      </View>
+      <Loader animating={isLoading} size={'large'} color={'red'} />
+      {isLoading ? null : (
+        <View>
+          <View style={styles.gap}></View>
+          <View style={styles.listsectionOne}>
+            <CatListSection
+              categoryData={product}
+              horizontal={false}
+              numColumns={3}
+              title="Television"
+            />
+          </View>
 
-      <View style={styles.innerView}>
-        <View style={styles.innerView}>
-          <CatListSection
-            categoryData={product}
-            horizontal={true}
-            numColumns={1}
-            title="Camera"
-          />
-        </View>
-        <View style={styles.innerView}>
-          <View style={styles.listsectionLast}></View>
+          <View style={styles.innerView}>
+            <View style={styles.innerView}>
+              <CatListSection
+                categoryData={product}
+                horizontal={true}
+                numColumns={1}
+                title="Camera"
+              />
+            </View>
+            <View style={styles.innerView}>
+              <View style={styles.listsectionLast}></View>
 
-          <CatListSection
-            categoryData={product}
-            horizontal={true}
-            numColumns={1}
-            title="Computer Accessories"
-          />
+              <CatListSection
+                categoryData={product}
+                horizontal={true}
+                numColumns={1}
+                title="Computer Accessories"
+              />
+            </View>
+          </View>
         </View>
-      </View>
+      )}
     </View>
   );
 }

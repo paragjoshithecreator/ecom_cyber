@@ -10,6 +10,7 @@ export default function Input({
   secureTextEntry,
   onBlur,
   keyboardType,
+  maxLength,
 }) {
   return (
     <View style={GlobalStyles.inputView}>
@@ -24,6 +25,7 @@ export default function Input({
         keyboardType={keyboardType}
         placeholderTextColor={'#cccccc'}
         autoCapitalize="none"
+        maxLength={maxLength}
       />
     </View>
   );

@@ -1,8 +1,18 @@
 export const strings = {
   //login/signup messsages
-  namePlaceHolder: 'Enter Your Name',
-  emailPlaceHolder: 'Enter Your Email',
-  passwordPlaceHolder: 'Enter Your password',
+  registerHeading: 'Create an account',
+  registerSubheading: 'Connect with your friends today!',
+  namePlaceHolder: 'Your Name',
+  emailPlaceHolder: 'Your Email',
+  passwordPlaceHolder: 'Your password',
+  forgetPassword: 'FORGET PASSWORD',
+  loginButton: 'LOGIN',
+  registerButton: 'SIGNUP',
+  switchMessage: 'Already have an account?',
+  switchScreen: 'LOGIN',
+  welcome: 'WELCOME',
+  mobileplaceholder: 'Your Mobile',
+  addressplaceholder: 'Your Address',
 
   //products
   productName: 'Product Name',
@@ -12,6 +22,9 @@ export const strings = {
   productRating: ' (⭐️⭐️⭐️⭐️)',
   modalHeading: 'Do You Want To Delete!',
   modalMetaData: 'Remove From Wish List',
+  buyNow: 'BUY NOW',
+  addtocart: 'Add TO Cart',
+  total: 'Total',
 
   //filter
   sortHeading: 'Filter',
@@ -21,6 +34,8 @@ export const strings = {
   sortByRating: 'Rating',
 
   //error messages
-  email_Password: 'invalid email or password!',
+  invalid: 'invalid email or password!',
   already: 'this email is already exist!',
+  errorMessage: 'fields are empty!',
+  alreadyRegisteredmessage: 'already registered!',
 };

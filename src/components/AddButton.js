@@ -10,7 +10,7 @@ export default function AddButton({title, onPress}) {
 }
 const styles = StyleSheet.create({
   container: {
-    width: '90%',
+    width: 100,
     height: 35,
     marginLeft: 10,
     backgroundColor: '#EFD81B',
