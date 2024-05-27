@@ -25,7 +25,9 @@ export default function EditProfile() {
   //geting User details
   const userInfo = async () => {
     const userEarlierToken = await AsyncStorage.getItem('userToken');
+    console.log(typeof userEarlierToken, 'TYPE');
     setToken(userEarlierToken);
+    console.log('TOKEN', userEarlierToken);
     try {
       const response = await axios.get(
         'https://e-com-cyber.onrender.com/user/getuser',
@@ -36,9 +38,10 @@ export default function EditProfile() {
           },
         },
       );
-
-      setUserName(response.data.data.userName);
-      setEmail(response.data.data.email);
+      const name = await response.data.data.userName;
+      const email = await response.data.data.email;
+      setUserName(name);
+      setEmail(email);
     } catch (error) {
       console.log(error);
     }
@@ -46,7 +49,7 @@ export default function EditProfile() {
 
   useEffect(() => {
     userInfo();
-    showToast();
+    console.log('useEffect');
   }, []);
 
   // updating user info

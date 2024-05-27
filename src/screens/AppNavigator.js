@@ -16,6 +16,9 @@ import {Image, TouchableOpacity, Text, View} from 'react-native';
 import ProductDetail from './ProductDetail';
 import Explore from './Explore';
 import MyCart from './MyCart';
+import {Screen} from 'react-native-screens';
+import ForgetPassSendEmail from './ForgetPassSendEmail';
+import ChangePassword from './ChangePassword';
 
 const Stack = createNativeStackNavigator();
 const Bottom = createBottomTabNavigator();
@@ -78,11 +81,6 @@ const DrawerNav = () => {
       <Drawer.Screen
         name="ProductDetail"
         component={ProductDetail}
-        options={{headerShown: false, drawerLabel: () => null}}
-      />
-      <Drawer.Screen
-        name="Login"
-        component={Login}
         options={{headerShown: false, drawerLabel: () => null}}
       />
     </Drawer.Navigator>
@@ -247,6 +245,16 @@ export default function AppNavigator() {
             name="DrawerNav"
             component={DrawerNav}
             options={{headerShown: false}}
+          />
+          <Stack.Screen
+            name="ForgetPassSendEmail"
+            component={ForgetPassSendEmail}
+            options={{title: 'Forgot Password'}}
+          />
+          <Stack.Screen
+            name="ChangePassword"
+            component={ChangePassword}
+            options={{title: 'New Password'}}
           />
         </Stack.Navigator>
       )}

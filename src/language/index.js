@@ -13,6 +13,9 @@ export const strings = {
   welcome: 'WELCOME',
   mobileplaceholder: 'Your Mobile',
   addressplaceholder: 'Your Address',
+  newPasswordPlaceHolder: 'New Password',
+  confirmPasswordPlaceHolder: 'Confirm Password',
+  enterOTP: 'Enter Token',
 
   //products
   productName: 'Product Name',

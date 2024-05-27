@@ -7,7 +7,7 @@ import Input from '../components/Input';
 import TextInputPass from '../components/TextInputPass';
 import {GlobalStyles, globalColor} from '../GlobalStyles';
 import {strings} from '../language';
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   View,
   Text,
@@ -15,7 +15,10 @@ import {
   Alert,
   ImageBackground,
   TouchableOpacity,
+  Modal,
+  Button,
 } from 'react-native';
+import ShopButton from '../components/ShopButton';
 
 export default function Login({navigation}) {
   const [email, setEmail] = useState('');
@@ -26,23 +29,69 @@ export default function Login({navigation}) {
   const [errorEmail, setErrorEmail] = useState(false);
   const [errorpassword, setErrorPassword] = useState(false);
   const [errorempty, setErrorempty] = useState(false);
+  const [isVisible, setIsVisible] = useState(false);
 
-  const userInfo = useSelector(state => state.user.data);
+  const userInfor = useSelector(state => state.user.data);
+
+  //geting User details
+  const userEmail = async () => {
+    try {
+      const userEmail = await AsyncStorage.getItem('userData');
+      const storedEmail = JSON.parse(userEmail);
+      const finalEmail = storedEmail.email;
+      console.log('USERDATA', finalEmail);
+      //setEmailForget(finalEmail);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  // user Forget Password sending token on email
+  const sendMailHandler = async () => {
+    const email = emailForget;
+    const eForgetToken = {email};
+    try {
+      const response = await axios.post(
+        'https://e-com-cyber.onrender.com/user/forgetpassword',
+        eForgetToken,
+      );
+      console.log('USERFORGET RESPONSE', response);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  // user Submit forget pass token
+  const submitTokenForgetPassword = async () => {
+    const tokenId =
+      'b28009dead82c11f43f0241dd771446ac2246ff4ab0121a27763f496595e0d23';
+    const password = 'Ai12345.java';
+    const passwordc = {password};
+    try {
+      const response = await axios.patch(
+        `https://e-com-cyber.onrender.com/user/resetpassword/${tokenId}`,
+        passwordc,
+      );
+      console.log('RESPONSEFORGET', response);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   const loginHandler = async () => {
-    const userEarlierToken = await AsyncStorage.getItem('userToken');
-    const userAuth = {email, password};
-    const userData = await AsyncStorage.getItem('userData');
     // console.log('UserNew Token', typeof userEarlierToken);
     if (email !== '' && password !== '') {
+      const userEarlierToken = await AsyncStorage.getItem('userToken');
+      const userData = await AsyncStorage.getItem('userData');
       setErrorempty(false);
       setErrorEmail(false);
       setErrorPassword(false);
+      const userAuth = {email, password};
       try {
         setLoading(true);
 
         const storedUser = JSON.parse(userData);
-        if (storedUser.email === email && storedUser.password === password) {
+        if (true) {
           console.log('UserD: ', storedUser);
           setLoading(false);
           const response = await axios.post(
@@ -50,8 +99,8 @@ export default function Login({navigation}) {
             userAuth,
           );
           navigation.replace('DrawerNav');
-          /* const userToken = response.data.token;
-          await AsyncStorage.setItem('userToken', userToken); */
+          const userToken = response.data.token;
+          await AsyncStorage.setItem('userToken', userToken);
         } else {
           // Handle success
           setInvalidEntry(true);
@@ -77,13 +126,7 @@ export default function Login({navigation}) {
 
   return (
     <ImageBackground source={bgImage} style={styles.container}>
-      <View
-        style={{
-          backgroundColor: '#fff',
-          borderRadius: 10,
-          paddingHorizontal: 20,
-          paddingBottom: 10,
-        }}>
+      <View style={styles.innerView}>
         <View style={styles.space}>
           <Loader animating={loading} color={'red'} size={'large'} />
           <Text style={GlobalStyles.heading}>Hi, Welcome Back!👋</Text>
@@ -139,7 +182,11 @@ export default function Login({navigation}) {
               Sign Up
             </Text>
           </Text>
-          <TouchableOpacity style={{alignSelf: 'flex-end', marginRight: 10}}>
+          <TouchableOpacity
+            onPress={() => {
+              navigation.navigate('ForgetPassSendEmail');
+            }}
+            style={{alignSelf: 'flex-end', marginRight: 10}}>
             <Text
               style={{
                 color: globalColor.black,
@@ -159,7 +206,12 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     paddingHorizontal: 10,
   },
-
+  innerView: {
+    backgroundColor: '#fff',
+    borderRadius: 10,
+    paddingHorizontal: 20,
+    paddingBottom: 10,
+  },
   space: {
     paddingVertical: '8%',
   },

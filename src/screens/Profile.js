@@ -1,26 +1,23 @@
+import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {useNavigation} from '@react-navigation/native';
+import PrimaryButton from '../components/PrimaryButton';
+import ModalCom from '../components/ModalCom';
+import React, {useEffect, useState} from 'react';
 import {
   View,
   Text,
   StyleSheet,
   Image,
   TouchableOpacity,
-  ToastAndroid,
   Linking,
-  Modal,
 } from 'react-native';
-import React, {useEffect, useState} from 'react';
-import PrimaryButton from '../components/PrimaryButton';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import {useNavigation} from '@react-navigation/native';
-import {useSelector} from 'react-redux';
-import ModalCom from '../components/ModalCom';
-import axios from 'axios';
+import Toast from 'react-native-toast-message';
 
 export default function Profile() {
   const [token, setToken] = useState('');
   const navigation = useNavigation();
   const [email, setEmail] = useState('');
-  // const [deleteAccount, setDeleteAccount] = useState(false);
   const [modelVisible, setModelVisible] = useState(false);
 
   const userInfo = async () => {
@@ -36,15 +33,23 @@ export default function Profile() {
   };
 
   const clearToken = async () => {
-    const keys = ['userData', 'userToken'];
     try {
-      await AsyncStorage.multiRemove(keys);
+      await AsyncStorage.removeItem('userToken');
       console.log('Token cleared successfully');
-      navigation.navigate('LogIn');
-      // ToastAndroid.show('Logout Successfully...');
+      setTimeout(() => {
+        navigation.navigate('LogIn');
+      }, 4000);
     } catch (error) {
       console.error('Error clearing token:', error);
     }
+  };
+  const showToast = () => {
+    Toast.show({
+      type: 'success',
+      text1: 'Logout successful 👋',
+      text2: 'Your Profile has Logout!',
+    });
+    clearToken();
   };
 
   useEffect(() => {
@@ -64,7 +69,7 @@ export default function Profile() {
           },
         },
       );
-      clearToken();
+      showToast();
     } catch (error) {
       console.log(error);
     }
@@ -99,6 +104,7 @@ export default function Profile() {
         </TouchableOpacity>
       </View>
       <View style={styles.space}></View>
+      <Toast />
 
       <Text style={styles.headings}>Accout Settings</Text>
       <View style={styles.spaceLiner}></View>
@@ -228,7 +234,7 @@ export default function Profile() {
           />
         </TouchableOpacity>
       </View>
-      <PrimaryButton onPress={clearToken}>LogOut</PrimaryButton>
+      <PrimaryButton onPress={showToast}>LogOut</PrimaryButton>
       <ModalCom
         metaData={'want to delete'}
         title={'Are You Sure!'}
@@ -248,7 +254,7 @@ const styles = StyleSheet.create({
     marginTop: 1,
     paddingVertical: 10,
     paddingHorizontal: 10,
-    backgroundColor: '#fff',
+    backgroundColor: 'gray',
   },
   innerView: {
     flexDirection: 'row',

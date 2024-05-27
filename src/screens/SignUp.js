@@ -41,12 +41,28 @@ export default function SignUp({navigation}) {
   const isUserAuth = async () => {
     const useToken = await AsyncStorage.getItem('userToken');
     setToken(useToken);
-    console.log('userToken', useToken);
+    // console.log('userToken', useToken);
   };
 
   useEffect(() => {
     isUserAuth();
   }, []);
+
+  const userHandler = async () => {
+    const userData = {userName, email, password, address, mobile};
+    console.log(userData);
+    try {
+      const response = await axios.post(
+        'https://e-com-cyber.onrender.com/user/signup',
+        userData,
+      );
+
+      console.log('TOKEN SIGN : ', response.data.token);
+      navigation.replace('LogIn');
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   const submitHandler = async index => {
     const userData = {userName, email, password, address, mobile};
@@ -79,12 +95,12 @@ export default function SignUp({navigation}) {
             console.log('TOKEN SIGN : ', response.data.token);
             const userToken = response.data.token;
             const jsonValue = JSON.stringify(userToken);
-            await AsyncStorage.setItem('userToken', jsonValue);
+            await AsyncStorage.setItem('userToken', userToken);
             dispatch(addUser({userName, email, password, mobile, address}));
             // Handle success
             await AsyncStorage.setItem(
               'userData',
-              JSON.stringify({userName, email, password, mobile, address}),
+              JSON.stringify({email, password}),
             );
             setLoading(false);
             navigation.replace('LogIn');
@@ -219,9 +235,7 @@ export default function SignUp({navigation}) {
           {alreadyRegistered ? (
             <Text style={GlobalStyles.error}>{alreadyRegisteredmessage}</Text>
           ) : null}
-          <PrimaryButton onPress={submitHandler}>
-            {registerButton}
-          </PrimaryButton>
+          <PrimaryButton onPress={userHandler}>{registerButton}</PrimaryButton>
           <View style={styles.page}>
             <Text style={GlobalStyles.loginHeading}>
               {switchMessage}
