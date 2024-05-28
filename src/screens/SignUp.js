@@ -1,7 +1,6 @@
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useDispatch, useSelector} from 'react-redux';
-import {addUser} from '../redux/UserSlice';
 import React, {useEffect, useState} from 'react';
 import {
   View,
@@ -14,7 +13,6 @@ import {
 import Input from '../components/Input';
 import PrimaryButton from '../components/PrimaryButton';
 import {GlobalStyles, globalColor} from '../GlobalStyles';
-import {validateEmail, validatePassword} from './Validation';
 import TextInputPass from '../components/TextInputPass';
 import {strings} from '../language';
 import Loader from '../components/Loader';
@@ -30,18 +28,15 @@ export default function SignUp({navigation}) {
   const [errorMobile, setErrorMobile] = useState(false);
   const [errorAddress, setErrorAddress] = useState(false);
   const [errorPassword, setErrorPassword] = useState(false);
+  const [ErrorMessage, setErrorMessage] = useState('');
   const dispatch = useDispatch();
   const userInfo = useSelector(state => state.user);
   const [loading, setLoading] = useState(false);
   const [token, setToken] = useState('');
-  const [errorMessageEmpty, setErrorMessageEmpty] = useState('');
-  const [invalidEntry, setInvalidEntry] = useState('');
-  const [alreadyRegistered, setAlreadyRegistered] = useState('');
 
   const isUserAuth = async () => {
     const useToken = await AsyncStorage.getItem('userToken');
     setToken(useToken);
-    // console.log('userToken', useToken);
   };
 
   useEffect(() => {
@@ -51,6 +46,7 @@ export default function SignUp({navigation}) {
   const userHandler = async () => {
     const userData = {userName, email, password, address, mobile};
     console.log(userData);
+
     try {
       const response = await axios.post(
         'https://e-com-cyber.onrender.com/user/signup',
@@ -58,63 +54,21 @@ export default function SignUp({navigation}) {
       );
 
       console.log('TOKEN SIGN : ', response.data.token);
+
+      const userToken = response.data.token;
+      const jsonValue = JSON.stringify(userToken);
+      await AsyncStorage.setItem('userToken', userToken);
       navigation.replace('LogIn');
     } catch (error) {
-      console.log(error);
-    }
-  };
+      // Enhanced error handling
+      console.log('Error message: ', error.message);
 
-  const submitHandler = async index => {
-    const userData = {userName, email, password, address, mobile};
-    const registeredEmails = userInfo.data.map(user => user.email);
-
-    if ((email !== '' && password !== '' && userName !== '', mobile !== '')) {
-      setErrorMessageEmpty('');
-      let emails = validateEmail(email);
-      console.log(emails);
-      let passwords = validatePassword(password);
-      console.log(passwords);
-      if (emails && passwords) {
-        setInvalidEntry('');
-        if (
-          registeredEmails.includes(email) ||
-          registeredEmails.includes(email) == null
-        ) {
-          setAlreadyRegistered(alreadyRegisteredmessage);
-        } else {
-          setLoading(true);
-          // Dispatch action to add user
-
-          // Save user info to AsyncStorage
-          try {
-            const response = await axios.post(
-              'https://e-com-cyber.onrender.com/user/signup',
-              userData,
-            );
-
-            console.log('TOKEN SIGN : ', response.data.token);
-            const userToken = response.data.token;
-            const jsonValue = JSON.stringify(userToken);
-            await AsyncStorage.setItem('userToken', userToken);
-            dispatch(addUser({userName, email, password, mobile, address}));
-            // Handle success
-            await AsyncStorage.setItem(
-              'userData',
-              JSON.stringify({email, password}),
-            );
-            setLoading(false);
-            navigation.replace('LogIn');
-          } catch (error) {
-            console.error('Error saving data to AsyncStorage:', error);
-          }
-        }
-      } else {
-        setInvalidEntry(invalid);
+      // Accessing detailed error response
+      if (error.response) {
+        const errorMessagereq = error.response.data.message;
+        setErrorMessage(errorMessagereq);
       }
-    } else {
-      setErrorMessageEmpty(errorMessageEmpty);
     }
-    console.log(userInfo);
   };
 
   const {
@@ -127,8 +81,6 @@ export default function SignUp({navigation}) {
     registerButton,
     switchMessage,
     switchScreen,
-    invalid,
-    alreadyRegisteredmessage,
     mobileplaceholder,
     addressplaceholder,
   } = strings;
@@ -193,9 +145,13 @@ export default function SignUp({navigation}) {
               }
             }}
           />
+          {errorPassword ? (
+            <Text style={GlobalStyles.error}>{errorMessage}</Text>
+          ) : null}
           <Input
             placeholder={mobileplaceholder}
             maxLength={10}
+            keyboardType={'numeric'}
             onChangeText={txt => {
               setMobile(txt);
             }}
@@ -208,7 +164,9 @@ export default function SignUp({navigation}) {
               }
             }}
           />
-          {errorMobile ? <Text>{errorMessage}</Text> : null}
+          {errorMobile ? (
+            <Text style={GlobalStyles.error}>{errorMessage}</Text>
+          ) : null}
           <Input
             placeholder={addressplaceholder}
             onBlur={() => {
@@ -223,17 +181,9 @@ export default function SignUp({navigation}) {
             }}
             value={address}
           />
-          {errorPassword ? (
-            <Text style={GlobalStyles.error}>{errorMessage}</Text>
-          ) : null}
-          {errorMessageEmpty ? (
-            <Text style={GlobalStyles.error}>{errorMessage}</Text>
-          ) : null}
-          {invalidEntry ? (
-            <Text style={GlobalStyles.error}>{invalid}</Text>
-          ) : null}
-          {alreadyRegistered ? (
-            <Text style={GlobalStyles.error}>{alreadyRegisteredmessage}</Text>
+
+          {ErrorMessage ? (
+            <Text style={GlobalStyles.error}>{ErrorMessage}</Text>
           ) : null}
           <PrimaryButton onPress={userHandler}>{registerButton}</PrimaryButton>
           <View style={styles.page}>

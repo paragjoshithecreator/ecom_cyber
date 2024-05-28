@@ -1,5 +1,4 @@
 import {StyleSheet} from 'react-native';
-import {green} from 'react-native-reanimated/lib/typescript/reanimated2/Colors';
 
 export const globalColor = {
   black: '#000000',
@@ -11,6 +10,7 @@ export const globalColor = {
   accent500: '#e6b30b',
   orange: '#fb7200',
   green: 'green',
+  blue: '#3498DB',
 };
 
 export const GlobalStyles = StyleSheet.create({
@@ -31,7 +31,7 @@ export const GlobalStyles = StyleSheet.create({
     height: 50,
     borderRadius: 10,
     alignSelf: 'center',
-    backgroundColor: globalColor.orange,
+    backgroundColor: globalColor.blue,
     justifyContent: 'center',
     marginTop: 5,
   },
@@ -47,7 +47,7 @@ export const GlobalStyles = StyleSheet.create({
     marginTop: 5,
     borderRadius: 10,
     alignSelf: 'center',
-    backgroundColor: globalColor.orange,
+    backgroundColor: globalColor.blue,
     justifyContent: 'center',
     opacity: 0.6,
   },
@@ -58,7 +58,7 @@ export const GlobalStyles = StyleSheet.create({
     marginVertical: 10,
     paddingLeft: 10,
     backgroundColor: '#fff',
-    borderColor: 'orange',
+    borderColor: globalColor.blue,
     alignSelf: 'center',
   },
   inputPassView: {
@@ -68,7 +68,7 @@ export const GlobalStyles = StyleSheet.create({
     paddingLeft: 10,
     borderWidth: 1,
     paddingRight: 10,
-    borderColor: 'orange',
+    borderColor: globalColor.blue,
     backgroundColor: '#fff',
     flexDirection: 'row',
     alignItems: 'center',
@@ -90,7 +90,8 @@ export const GlobalStyles = StyleSheet.create({
   },
   error: {
     color: 'red',
-    fontSize: 14,
+    fontSize: 15,
     alignSelf: 'flex-end',
+    marginHorizontal: 20,
   },
 });

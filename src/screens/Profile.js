@@ -15,8 +15,8 @@ import {
 import Toast from 'react-native-toast-message';
 
 export default function Profile() {
-  const [token, setToken] = useState('');
   const navigation = useNavigation();
+  const [token, setToken] = useState('');
   const [email, setEmail] = useState('');
   const [modelVisible, setModelVisible] = useState(false);
 
@@ -254,7 +254,7 @@ const styles = StyleSheet.create({
     marginTop: 1,
     paddingVertical: 10,
     paddingHorizontal: 10,
-    backgroundColor: 'gray',
+    backgroundColor: '#F7F9F9',
   },
   innerView: {
     flexDirection: 'row',

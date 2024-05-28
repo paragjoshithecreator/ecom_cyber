@@ -1,4 +1,5 @@
 import axios from 'axios';
+import {useIsFocused} from '@react-navigation/native';
 import Toast from 'react-native-toast-message';
 import {useNavigation} from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -6,19 +7,30 @@ import Input from '../components/Input';
 import AddButton from '../components/AddButton';
 import {strings} from '../language';
 import {globalColor} from '../GlobalStyles';
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {View, Text, Image, TouchableOpacity, StyleSheet} from 'react-native';
+import PhoneInput from 'react-native-phone-number-input';
+import {Colors} from 'react-native/Libraries/NewAppScreen';
 
 export default function EditProfile() {
+  const isFocused = useIsFocused();
+  const phoneInput = useRef(null);
   const [userName, setUserName] = useState('');
   const [email, setEmail] = useState('');
+  const [mobile, setMobile] = useState('');
+  const [address, setAddress] = useState('');
   const [token, setToken] = useState('');
+  const [value, setValue] = useState('');
+  const [valid, setValid] = useState(false);
+  const [formattedValue, setFormattedValue] = useState('');
+
+  console.log('value', mobile);
 
   const showToast = () => {
     Toast.show({
       type: 'success',
       text1: 'Successful',
-      text2: 'Your Profile is Updated 👋',
+      text2: 'Your Profile is Updated👍',
     });
   };
 
@@ -38,23 +50,32 @@ export default function EditProfile() {
           },
         },
       );
+
       const name = await response.data.data.userName;
       const email = await response.data.data.email;
+      const mobile = await response.data.data.mobile;
+      const address = await response.data.data.address;
       setUserName(name);
       setEmail(email);
+      setMobile(mobile);
+      setAddress(address);
+      setValue(mobile);
+      setFormattedValue(mobile);
+      setValid(true);
     } catch (error) {
-      console.log(error);
+      console.log('Server:', error);
     }
   };
 
   useEffect(() => {
-    userInfo();
-    console.log('useEffect');
-  }, []);
+    if (isFocused) {
+      userInfo();
+    }
+  }, [isFocused]);
 
   // updating user info
   const updateUser = async () => {
-    const userUpdatedData = {userName, email};
+    const userUpdatedData = {userName, email, mobile, address};
     try {
       const response = await axios.put(
         'https://e-com-cyber.onrender.com/user/updateuser',
@@ -107,6 +128,45 @@ export default function EditProfile() {
           }}
           value={email}
         />
+        <Text>{'Mobile'}</Text>
+
+        <Input
+          placeholder={'mobile'}
+          onChangeText={txt => {
+            setMobile(txt);
+          }}
+          value={mobile}
+        />
+        <Text>{formattedValue}</Text>
+        <PhoneInput
+          placeholder={mobile}
+          countryPickerButtonStyle={{height: 60}}
+          containerStyle={{height: 60}}
+          textInputStyle={{height: 60}}
+          ref={phoneInput}
+          defaultValue={mobile}
+          defaultCode="IN"
+          layout="first"
+          onChangeText={text => {
+            setMobile(text);
+          }}
+          onChangeFormattedText={text => {
+            setFormattedValue(text);
+          }}
+          value={mobile}
+          withDarkTheme
+          withShadow
+          autoFocus
+        />
+
+        <Text>{'Address'}</Text>
+        <Input
+          placeholder={'enter address'}
+          onChangeText={txt => {
+            setAddress(txt);
+          }}
+          value={address}
+        />
         <View style={styles.buttonView}>
           <AddButton
             onPress={() => {
@@ -114,6 +174,7 @@ export default function EditProfile() {
             }}
             title={'CANCEL'}
           />
+
           <AddButton onPress={updateUser} title={'SAVE'} />
         </View>
       </View>

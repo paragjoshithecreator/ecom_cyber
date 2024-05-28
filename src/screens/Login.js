@@ -7,30 +7,24 @@ import Input from '../components/Input';
 import TextInputPass from '../components/TextInputPass';
 import {GlobalStyles, globalColor} from '../GlobalStyles';
 import {strings} from '../language';
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import {
   View,
   Text,
   StyleSheet,
-  Alert,
   ImageBackground,
   TouchableOpacity,
-  Modal,
-  Button,
 } from 'react-native';
-import ShopButton from '../components/ShopButton';
 
 export default function Login({navigation}) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [invalidEntry, setInvalidEntry] = useState(false);
   const [invalidEntryMessage, setInvalidEntryMessage] = useState('');
   const [loading, setLoading] = useState(false);
   const [errorEmail, setErrorEmail] = useState(false);
   const [errorpassword, setErrorPassword] = useState(false);
   const [errorempty, setErrorempty] = useState(false);
-  const [isVisible, setIsVisible] = useState(false);
-
+  const [errorMessages, setErrorMessages] = useState('');
   const userInfor = useSelector(state => state.user.data);
 
   //geting User details
@@ -46,40 +40,7 @@ export default function Login({navigation}) {
     }
   };
 
-  // user Forget Password sending token on email
-  const sendMailHandler = async () => {
-    const email = emailForget;
-    const eForgetToken = {email};
-    try {
-      const response = await axios.post(
-        'https://e-com-cyber.onrender.com/user/forgetpassword',
-        eForgetToken,
-      );
-      console.log('USERFORGET RESPONSE', response);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  // user Submit forget pass token
-  const submitTokenForgetPassword = async () => {
-    const tokenId =
-      'b28009dead82c11f43f0241dd771446ac2246ff4ab0121a27763f496595e0d23';
-    const password = 'Ai12345.java';
-    const passwordc = {password};
-    try {
-      const response = await axios.patch(
-        `https://e-com-cyber.onrender.com/user/resetpassword/${tokenId}`,
-        passwordc,
-      );
-      console.log('RESPONSEFORGET', response);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
   const loginHandler = async () => {
-    // console.log('UserNew Token', typeof userEarlierToken);
     if (email !== '' && password !== '') {
       const userEarlierToken = await AsyncStorage.getItem('userToken');
       const userData = await AsyncStorage.getItem('userData');
@@ -91,23 +52,22 @@ export default function Login({navigation}) {
         setLoading(true);
 
         const storedUser = JSON.parse(userData);
-        if (true) {
-          console.log('UserD: ', storedUser);
-          setLoading(false);
-          const response = await axios.post(
-            'https://e-com-cyber.onrender.com/user/login',
-            userAuth,
-          );
-          navigation.replace('DrawerNav');
-          const userToken = response.data.token;
-          await AsyncStorage.setItem('userToken', userToken);
-        } else {
-          // Handle success
-          setInvalidEntry(true);
-          setInvalidEntryMessage(invalid);
-        }
+
+        console.log('UserD: ', storedUser);
+        const response = await axios.post(
+          'https://e-com-cyber.onrender.com/user/login',
+          userAuth,
+        );
+        setLoading(false);
+        navigation.replace('DrawerNav');
+        const userToken = response.data.token;
+        await AsyncStorage.setItem('userToken', userToken);
       } catch (error) {
-        console.error('Error retrieving data from AsyncStorage:', error);
+        console.log('Error retrieving data from AsyncStorage:', error.message);
+        if (error.response) {
+          const errorMessagereq = error.response.data.message;
+          setErrorMessages(errorMessagereq);
+        }
       }
     } else {
       setErrorempty(true);
@@ -120,7 +80,6 @@ export default function Login({navigation}) {
     passwordPlaceHolder,
     loginButton,
     forgetPassword,
-    invalid,
   } = strings;
   const bgImage = require('../assets/img/bglogin.png');
 
@@ -145,9 +104,7 @@ export default function Login({navigation}) {
           }}
           value={email}
         />
-        {errorEmail ? (
-          <Text style={GlobalStyles.error}>{errorMessage}</Text>
-        ) : null}
+
         <TextInputPass
           placeholder={passwordPlaceHolder}
           onChangeText={txt => {
@@ -165,8 +122,8 @@ export default function Login({navigation}) {
         {errorpassword || errorempty ? (
           <Text style={GlobalStyles.error}>{errorMessage}</Text>
         ) : null}
-        {invalidEntry ? (
-          <Text style={GlobalStyles.error}>{invalidEntryMessage}</Text>
+        {loading ? (
+          <Text style={GlobalStyles.error}>{errorMessages}</Text>
         ) : null}
         <PrimaryButton onPress={loginHandler}>{loginButton}</PrimaryButton>
 

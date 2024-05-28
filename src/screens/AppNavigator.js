@@ -18,7 +18,6 @@ import Explore from './Explore';
 import MyCart from './MyCart';
 import {Screen} from 'react-native-screens';
 import ForgetPassSendEmail from './ForgetPassSendEmail';
-import ChangePassword from './ChangePassword';
 
 const Stack = createNativeStackNavigator();
 const Bottom = createBottomTabNavigator();
@@ -164,24 +163,7 @@ const Auth = () => {
           tabBarActiveBackgroundColor: 'orange',
         }}
       />
-      {/*  <Bottom.Screen
-        name="WishList"
-        component={WishList}
-        options={{
-          tabBarIcon: ({tintColor}) => (
-            <Image
-              tintColor={'#AA336A'}
-              style={{width: 24, height: 24}}
-              source={require('../assets/img/love.png')}
-            />
-          ),
-          tabBarInactiveTintColor: '#fff',
-          tabBarActiveTintColor: '#AA336A',
-          // headerTintColor: '#fff',
-          tabBarInactiveBackgroundColor: '#fff',
-          tabBarActiveBackgroundColor: 'orange',
-        }}
-      />  */}
+
       <Bottom.Screen
         name="Profile"
         component={Profile}
@@ -195,7 +177,6 @@ const Auth = () => {
           ),
           tabBarInactiveTintColor: '#fff',
           tabBarActiveTintColor: '#AA336A',
-          // headerTintColor: '#fff',
           tabBarInactiveBackgroundColor: '#fff',
           tabBarActiveBackgroundColor: 'orange',
         }}
@@ -250,11 +231,6 @@ export default function AppNavigator() {
             name="ForgetPassSendEmail"
             component={ForgetPassSendEmail}
             options={{title: 'Forgot Password'}}
-          />
-          <Stack.Screen
-            name="ChangePassword"
-            component={ChangePassword}
-            options={{title: 'New Password'}}
           />
         </Stack.Navigator>
       )}

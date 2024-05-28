@@ -49,7 +49,7 @@ export default function AddCartList({listRef}) {
       setProductData(result);
       setUserData(result);
       setData(result);
-      // setLoading(false);
+      setLoading(false);
     } catch (error) {
       console.error('Product:', error.message);
     }
@@ -84,89 +84,89 @@ export default function AddCartList({listRef}) {
 
   return (
     <View style={styles.mainContainer}>
-      {/* {loading ? <Loader size="large" animating={loading} /> : null} */}
+      {loading ? <Loader size="large" animating={loading} /> : null}
       <View>
-        {/* {loading ? null : ( */}
-        <View>
-          <View
-            style={{
-              flexDirection: 'row',
-              justifyContent: 'space-evenly',
-              alignItems: 'center',
-              marginTop: 5,
-            }}>
-            <SearchBar
-              onPress={() => {
-                setProduct('');
-                setData(productsData);
-              }}
-              image={require('../assets/img/delete.png')}
-              placeholder="search"
-              onChangeText={txt => {
-                setProduct(txt);
-                onSearch(txt);
-              }}
-              value={product}
-            />
-            <TouchableOpacity
-              onPress={() => {
-                setisModelVisible(true);
+        {loading ? null : (
+          <View>
+            <View
+              style={{
+                flexDirection: 'row',
+                justifyContent: 'space-evenly',
+                alignItems: 'center',
+                marginTop: 5,
               }}>
-              <Image
-                style={{width: 20, height: 20}}
-                source={require('../assets/img/filter.png')}
+              <SearchBar
+                onPress={() => {
+                  setProduct('');
+                  setData(productsData);
+                }}
+                image={require('../assets/img/delete.png')}
+                placeholder="search"
+                onChangeText={txt => {
+                  setProduct(txt);
+                  onSearch(txt);
+                }}
+                value={product}
               />
-            </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => {
+                  setisModelVisible(true);
+                }}>
+                <Image
+                  style={{width: 20, height: 20}}
+                  source={require('../assets/img/filter.png')}
+                />
+              </TouchableOpacity>
+            </View>
+            <FlatList
+              ref={listRef}
+              initialScrollIndex={ind}
+              data={data}
+              renderItem={({item}) => (
+                <View>
+                  <TouchableOpacity
+                    onPress={() => {
+                      navigation.navigate('ProductDetail', {
+                        itemId: item._id,
+                      });
+                    }}
+                    style={styles.listContainer}>
+                    <View style={styles.listView}>
+                      <View style={styles.imageView}>
+                        <Image
+                          style={styles.imageTow}
+                          source={{uri: item.image}}
+                        />
+                      </View>
+                    </View>
+                    <View style={{justifyContent: 'center'}}>
+                      <Text style={styles.heading}>{item.name}</Text>
+                      <View style={styles.ratingView}>
+                        <Text style={styles.rateList}>
+                          {item.ratings}
+                          {productRating}
+                        </Text>
+                        <Text style={styles.rateList}>{item.ratingNumber}</Text>
+                      </View>
+                      <View style={styles.rateView}>
+                        <Text style={styles.heading}>
+                          {productPrice}
+                          {item.price}
+                        </Text>
+                        <Text style={styles.lessText}>{item.less}</Text>
+                        <Text style={styles.offText}>{item.off}</Text>
+                      </View>
+                      <Text style={styles.available}>
+                        ⬅️ 14 Days return available
+                      </Text>
+                    </View>
+                  </TouchableOpacity>
+                </View>
+              )}
+              keyExtractor={item => item._id}
+            />
           </View>
-          <FlatList
-            ref={listRef}
-            initialScrollIndex={ind}
-            data={data}
-            renderItem={({item}) => (
-              <View>
-                <TouchableOpacity
-                  onPress={() => {
-                    navigation.navigate('ProductDetail', {
-                      itemId: item._id,
-                    });
-                  }}
-                  style={styles.listContainer}>
-                  <View style={styles.listView}>
-                    <View style={styles.imageView}>
-                      <Image
-                        style={styles.imageTow}
-                        source={{uri: item.image}}
-                      />
-                    </View>
-                  </View>
-                  <View style={{justifyContent: 'center'}}>
-                    <Text style={styles.heading}>{item.name}</Text>
-                    <View style={styles.ratingView}>
-                      <Text style={styles.rateList}>
-                        {item.ratings}
-                        {productRating}
-                      </Text>
-                      <Text style={styles.rateList}>{item.ratingNumber}</Text>
-                    </View>
-                    <View style={styles.rateView}>
-                      <Text style={styles.heading}>
-                        {productPrice}
-                        {item.price}
-                      </Text>
-                      <Text style={styles.lessText}>{item.less}</Text>
-                      <Text style={styles.offText}>{item.off}</Text>
-                    </View>
-                    <Text style={styles.available}>
-                      ⬅️ 14 Days return available
-                    </Text>
-                  </View>
-                </TouchableOpacity>
-              </View>
-            )}
-            keyExtractor={item => item._id}
-          />
-        </View>
-        {/* )} */}
+        )}
       </View>
 
       <ModalFilter

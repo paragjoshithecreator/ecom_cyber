@@ -39,6 +39,6 @@ export const strings = {
   //error messages
   invalid: 'invalid email or password!',
   already: 'this email is already exist!',
-  errorMessage: 'fields are empty!',
+  errorMessage: 'empty field!',
   alreadyRegisteredmessage: 'already registered!',
 };

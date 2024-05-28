@@ -5,7 +5,6 @@ import {strings} from '../language';
 import PrimaryButton from '../components/PrimaryButton';
 import axios from 'axios';
 import {GlobalStyles, globalColor} from '../GlobalStyles';
-import CountDown from 'react-native-countdown-component';
 import Toast from 'react-native-toast-message';
 import CheckBox from '@react-native-community/checkbox';
 
