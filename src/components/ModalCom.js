@@ -31,10 +31,10 @@ export default function ModalCom({
         <View style={styles.root}>
           <View style={styles.innerContainer}>
             <Text style={GlobalStyles.subHeading}>{title}</Text>
-            <TouchableOpacity style={styles.removeView}>
+            <View style={styles.removeView}>
               <Image style={styles.image} source={image} />
               <Text style={styles.removeText}>{metaData}</Text>
-            </TouchableOpacity>
+            </View>
             <View style={{flexDirection: 'row'}}>
               <AddButton onPress={onPressYes} title={'Yes'} />
               <AddButton onPress={onPressNo} title={'No'} />

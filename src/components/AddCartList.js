@@ -14,6 +14,8 @@ import {
   TouchableOpacity,
   Modal,
 } from 'react-native';
+import ShopButton from './ShopButton';
+import PrimaryButton from './PrimaryButton';
 
 export default function AddCartList({listRef}) {
   const route = useRoute();
@@ -81,7 +83,7 @@ export default function AddCartList({listRef}) {
   } = strings;
 
   const modalImage = require('../assets/img/delete.png');
-
+  const {addtocart} = strings;
   return (
     <View style={styles.mainContainer}>
       {loading ? <Loader size="large" animating={loading} /> : null}
@@ -123,7 +125,7 @@ export default function AddCartList({listRef}) {
               initialScrollIndex={ind}
               data={data}
               renderItem={({item}) => (
-                <View>
+                <TouchableOpacity>
                   <TouchableOpacity
                     onPress={() => {
                       navigation.navigate('ProductDetail', {
@@ -160,8 +162,16 @@ export default function AddCartList({listRef}) {
                         ⬅️ 14 Days return available
                       </Text>
                     </View>
+                    <View
+                      style={{alignItems: 'center', justifyContent: 'center'}}>
+                      <ShopButton
+                        onPress={() => {}}
+                        title={addtocart}
+                        backgroundColor={'green'}
+                      />
+                    </View>
                   </TouchableOpacity>
-                </View>
+                </TouchableOpacity>
               )}
               keyExtractor={item => item._id}
             />

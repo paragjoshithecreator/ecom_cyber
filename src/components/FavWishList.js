@@ -83,12 +83,15 @@ export default function FavWishList() {
         />
       </View>
       <ModalCom
+        onPressYes={() => {
+          setRemove(false);
+        }}
+        onPressNo={() => {
+          setRemove(false);
+        }}
         title={modalHeading}
         metaData={modalMetaData}
         image={modalImage}
-        onPress={() => {
-          setRemove(false);
-        }}
         visible={remove}
         animationType="slide"
       />

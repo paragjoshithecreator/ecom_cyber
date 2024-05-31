@@ -195,7 +195,7 @@ export default function Profile() {
         <View style={styles.innerView}>
           <Image
             style={styles.imageSetting}
-            source={require('../assets/img/like.png')}
+            source={require('../assets/img/delete.png')}
           />
           <Text style={styles.textSetting}>Delete Account</Text>
         </View>

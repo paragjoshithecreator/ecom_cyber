@@ -64,10 +64,9 @@ export default function ProductDetail() {
   const [itemName, setName] = useState('');
   const [itemPrice, setPrice] = useState('');
   const [image, setImage] = useState('');
-  // const [rating, setrating] = useState('');
   const [itemdescription, setDescription] = useState('');
 
-  producItemId = route.params ? route.params.itemId : '';
+  const producItemId = route.params ? route.params.itemId : '';
 
   const ProductDetails = async () => {
     setLoading(true);
@@ -101,10 +100,11 @@ export default function ProductDetail() {
     const rating = ratingss;
     const ratings = {rating};
 
-    const userEarlierToken = await AsyncStorage.getItem('signupToken');
+    const userEarlierToken = await AsyncStorage.getItem('userToken');
+
     try {
       const response = await axios.post(
-        'https://e-com-cyber.onrender.com/rating/createrating',
+        `https://e-com-cyber.onrender.com/product/ratingproduct/${producItemId}`,
         ratings,
         {
           headers: {
@@ -112,8 +112,12 @@ export default function ProductDetail() {
           },
         },
       );
+      console.log(response);
     } catch (error) {
-      console.error('Error retrieving data from AsyncStorage:', error);
+      console.error(
+        'Error retrieving data from AsyncStorage:',
+        error.reponse.data,
+      );
     }
   };
 
@@ -147,6 +151,25 @@ export default function ProductDetail() {
     }
   }
 
+  const addtoCartHnadler = async () => {
+    const userToken = await AsyncStorage.getItem('userToken');
+    try {
+      const response = await axios.get(
+        `https://e-com-cyber.onrender.com/user/addtocart/${producItemId}`,
+        {},
+        {
+          headers: {
+            authorization: `Bearer ${userToken}`, // Include token in the header
+          },
+        },
+      );
+      console.log(response);
+    } catch (error) {
+      console.error(error.response.data);
+    }
+  };
+
+  const {feedback} = strings;
   return (
     <View style={styles.root}>
       <FlatList
@@ -169,13 +192,6 @@ export default function ProductDetail() {
                     />
                   </TouchableOpacity>
                   <Image style={styles.image} source={{uri: item.image}} />
-                  {/*  <SliderIntro
-                    data={slides}
-                    numberOfSlides={1}
-                    dotWidth={12}
-                    onDone={() => {}}
-                    onSkip={() => {}}
-                  /> */}
                 </View>
 
                 <View style={styles.listView}>
@@ -194,6 +210,11 @@ export default function ProductDetail() {
                       // setModal(true);
                       ratings();
                     }}></TouchableOpacity>
+                  <View style={styles.feedbackView}>
+                    <TouchableOpacity style={styles.feedbackinnerView}>
+                      <Text style={{color: globalColor.blue}}>{feedback}</Text>
+                    </TouchableOpacity>
+                  </View>
                   <Text
                     style={[
                       GlobalStyles.subHeading,
@@ -249,28 +270,7 @@ export default function ProductDetail() {
                     {item.description}
                   </Text>
 
-                  <View style={styles.innerView}>
-                    {/* <Text
-                      style={[
-                        GlobalStyles.subHeading,
-                        {color: 'green', fontSize: 20, paddingLeft: 10},
-                      ]}>
-                      {productPrice}
-                      {item.price}
-                    </Text> */}
-                    {/* <TouchableOpacity
-                      onPress={() => {
-                        // setModal(true);
-                        rating();
-                      }}>
-                      <Rating
-                        showRating
-                        onFinishRating={rating}
-                        style={{paddingVertical: 10, marginRight: 10}}
-                        imageSize={18}
-                      />
-                    </TouchableOpacity> */}
-                  </View>
+                  <View style={styles.innerView}></View>
                 </View>
               </View>
             )}
@@ -279,12 +279,7 @@ export default function ProductDetail() {
         keyExtractor={item => item._id}
       />
 
-      <PrimaryButton
-        onPress={() => {
-          navigation.navigate('Home');
-        }}>
-        ADD TO CART
-      </PrimaryButton>
+      <PrimaryButton onPress={addtoCartHnadler}>ADD TO CART</PrimaryButton>
     </View>
   );
 }
@@ -341,5 +336,15 @@ const styles = StyleSheet.create({
     color: globalColor.gray,
     textAlign: 'flex-start',
     paddingLeft: 10,
+  },
+  feedbackView: {
+    marginHorizontal: 10,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'flex-end',
+  },
+  feedbackinnerView: {
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });

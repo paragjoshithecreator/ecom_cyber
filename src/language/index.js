@@ -27,7 +27,9 @@ export const strings = {
   modalMetaData: 'Remove From Wish List',
   buyNow: 'BUY NOW',
   addtocart: 'Add TO Cart',
+  removetoCart: 'Remove',
   total: 'Total',
+  feedback: 'reviews',
 
   //filter
   sortHeading: 'Filter',

@@ -13,6 +13,7 @@ import {
   TouchableOpacity,
   StyleSheet,
 } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function MyCart() {
   const [loading, setLoading] = useState(false);
@@ -20,31 +21,51 @@ export default function MyCart() {
 
   const products = async () => {
     setLoading(true);
-
+    const token = await AsyncStorage.getItem('userToken');
+    console.log('TOKEN', token);
     try {
-      const selectedProduct = 'laptop';
-      console.log('This is Category..', selectedProduct);
       const response = await axios.get(
-        `https://e-com-cyber.onrender.com/product/getallproduct?category=${selectedProduct}`,
+        `https://e-com-cyber.onrender.com/user/getcart`,
+        {},
+
+        {
+          headers: {
+            authorization: `Bearer ${token}`,
+          },
+        },
       );
 
-      const result = await response.data.productData;
-
-      const final = await result.filter(
-        item => item.category === selectedProduct,
-      );
-
-      setProduct(final);
+      const result = await response.data.data.products;
+      console.log(result);
+      setProduct(result);
 
       setLoading(false);
     } catch (error) {
-      console.error('Product:', error);
+      console.error('Product:', error.response.data);
     }
   };
   useEffect(() => {
     products();
   }, []);
-  const {addtocart, buyNow, productPrice, total} = strings;
+
+  const removeTocartHandler = async productId => {
+    const token = await AsyncStorage.getItem(`userToken`);
+    try {
+      const response = await axios.delete(
+        `https://e-com-cyber.onrender.com/removefromcart/${productId}`,
+        {},
+        {
+          headers: {
+            authorization: `Bearer ${token}`,
+          },
+        },
+      );
+    } catch (error) {
+      console.log(error.response.data);
+    }
+  };
+
+  const {removetoCart, buyNow, productPrice, total} = strings;
   return (
     <View style={styles.container}>
       {loading ? (
@@ -61,6 +82,7 @@ export default function MyCart() {
                       <Image style={styles.image} source={{uri: item.image}} />
                       <View>
                         <Text style={styles.nameText}>{item.name}</Text>
+                        <Text style={styles.nameText}>{item.quantity}</Text>
                         <Text style={styles.priceText}>$ {item.price}</Text>
                         <Text style={styles.nameText}>
                           {item.ratings}
@@ -70,8 +92,8 @@ export default function MyCart() {
                     </View>
                     <View style={styles.buttonView}>
                       <ShopButton
-                        onPress={() => {}}
-                        title={addtocart}
+                        onPress={() => removeTocartHandler(item.productId)}
+                        title={removetoCart}
                         backgroundColor={'green'}
                       />
                     </View>
