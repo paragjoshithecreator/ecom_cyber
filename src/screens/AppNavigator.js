@@ -16,7 +16,6 @@ import {Image, TouchableOpacity, Text, View} from 'react-native';
 import ProductDetail from './ProductDetail';
 import Explore from './Explore';
 import MyCart from './MyCart';
-import {Screen} from 'react-native-screens';
 import ForgetPassSendEmail from './ForgetPassSendEmail';
 
 const Stack = createNativeStackNavigator();
@@ -89,7 +88,6 @@ const DrawerNav = () => {
 const Auth = () => {
   return (
     <Bottom.Navigator
-      initialRouteName="Dashboard"
       screenOptions={{
         headerShown: false,
       }}>

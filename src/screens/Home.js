@@ -19,9 +19,11 @@ import FreeShopView from '../components/FreeShopView';
 import TrendingList from '../components/TrendingList';
 import {useState} from 'react';
 
+
 export default function Home() {
   const [search, setSearch] = useState('');
 
+  
   return (
     <View style={styles.mainContainer}>
       <View style={styles.innerView}>
@@ -48,6 +50,8 @@ export default function Home() {
         </View>
         <View style={styles.spaceView}></View>
         <ServiceList />
+       
+        
         <ImageBackground
           style={styles.bg}
           source={require('../assets/img/bgShope.jpeg')}>

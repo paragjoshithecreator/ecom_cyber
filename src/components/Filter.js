@@ -37,7 +37,7 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
   },
   listView: {
-    backgroundColor: '#fff',
+    backgroundColor: '#ccc',
     flex: 1,
   },
 });

@@ -94,7 +94,8 @@ export default function EditProfile() {
   };
 
   const navigation = useNavigation();
-  const {namePlaceHolder, emailPlaceHolder, welcome} = strings;
+  const {namePlaceHolder, emailPlaceHolder, welcome, mobileplaceholder} =
+    strings;
   return (
     <View style={styles.container}>
       <View style={styles.innerContainer}>
@@ -123,6 +124,7 @@ export default function EditProfile() {
         <Text>{emailPlaceHolder}</Text>
         <Input
           placeholder={emailPlaceHolder}
+        keyboardType={'email-address'}
           onChangeText={txt => {
             setEmail(txt);
           }}
@@ -131,7 +133,8 @@ export default function EditProfile() {
         <Text>{'Mobile'}</Text>
 
         <Input
-          placeholder={'mobile'}
+          placeholder={mobileplaceholder}
+          keyboardType={'numeric'}
           onChangeText={txt => {
             setMobile(txt);
           }}

@@ -1,5 +1,9 @@
 import axios from 'axios';
-import {useNavigation, useRoute} from '@react-navigation/native';
+import {
+  useFocusEffect,
+  useNavigation,
+  useRoute,
+} from '@react-navigation/native';
 import SearchBar from './SearchBar';
 import Loader from './Loader';
 import ModalFilter from './ModalFilter';
@@ -16,6 +20,7 @@ import {
 } from 'react-native';
 import ShopButton from './ShopButton';
 import PrimaryButton from './PrimaryButton';
+import {useIsFocused} from '@react-navigation/native';
 
 export default function AddCartList({listRef}) {
   const route = useRoute();
@@ -30,14 +35,14 @@ export default function AddCartList({listRef}) {
   const [isModelVisible, setisModelVisible] = useState(false);
   const [category, setCategory] = useState('');
   const [ind, setind] = useState(0);
+  const isFocused = useIsFocused();
 
   const products = async _id => {
     setLoading(true);
     setCategory(_id);
-    console.log('setCatego.....', category);
     try {
       const selectedProduct = _id.toLowerCase();
-      console.log('This is Category..', selectedProduct);
+
       const response = await axios.get(
         `https://e-com-cyber.onrender.com/product/getallproduct?category=${selectedProduct}`,
       );
@@ -69,7 +74,9 @@ export default function AddCartList({listRef}) {
     }
   };
   useEffect(() => {
-    products(_id);
+    if (isFocused) {
+      products(_id);
+    }
   }, [_id]);
 
   const {
@@ -224,6 +231,10 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'flex-start',
     paddingVertical: 10,
+    backgroundColor: '#fff',
+    marginTop: 10,
+    borderRadius: 10,
+    elevation: 2,
   },
   listView: {
     padding: 10,

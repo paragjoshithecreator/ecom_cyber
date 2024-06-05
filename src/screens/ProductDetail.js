@@ -60,11 +60,12 @@ export default function ProductDetail() {
   const route = useRoute();
   const [productData, setProduct] = useState(null);
   const [Loading, setLoading] = useState(false);
-  const [itemId, setId] = useState('');
+  const [productId, setId] = useState('');
   const [itemName, setName] = useState('');
-  const [itemPrice, setPrice] = useState('');
+  const [price, setPrice] = useState('');
   const [image, setImage] = useState('');
-  const [itemdescription, setDescription] = useState('');
+  const [quantity, setQuantity] = useState('');
+  const [description, setDescription] = useState(1);
 
   const producItemId = route.params ? route.params.itemId : '';
 
@@ -82,6 +83,7 @@ export default function ProductDetail() {
         setDescription(response.data.productData.description);
         setPrice(response.data.productData.price);
         setImage(response.data.productData.image);
+        setQuantity(1);
       }
       setLoading(false);
 
@@ -116,7 +118,7 @@ export default function ProductDetail() {
     } catch (error) {
       console.error(
         'Error retrieving data from AsyncStorage:',
-        error.reponse.data,
+        error.response.data,
       );
     }
   };
@@ -132,8 +134,8 @@ export default function ProductDetail() {
       {
         itemId: itemId,
         itemName: itemName,
-        itemPrice: itemPrice,
-        itemdescription: itemdescription,
+        itemPrice: price,
+        itemdescription: description,
         image: image,
       },
     ];
@@ -154,9 +156,11 @@ export default function ProductDetail() {
   const addtoCartHnadler = async () => {
     const userToken = await AsyncStorage.getItem('userToken');
     try {
-      const response = await axios.get(
-        `https://e-com-cyber.onrender.com/user/addtocart/${producItemId}`,
-        {},
+      console.log('TOKEN', userToken);
+      console.log('product id', producItemId);
+      const response = await axios.post(
+        `https://e-com-cyber.onrender.com/user/addtocart`,
+        {productId, image, price, description, quantity},
         {
           headers: {
             authorization: `Bearer ${userToken}`, // Include token in the header

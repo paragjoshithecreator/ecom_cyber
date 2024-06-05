@@ -41,6 +41,7 @@ export default function Login({navigation}) {
   };
 
   const loginHandler = async () => {
+    setLoading(true);
     if (email !== '' && password !== '') {
       const userEarlierToken = await AsyncStorage.getItem('userToken');
       const userData = await AsyncStorage.getItem('userData');
@@ -49,8 +50,6 @@ export default function Login({navigation}) {
       setErrorPassword(false);
       const userAuth = {email, password};
       try {
-        setLoading(true);
-
         const storedUser = JSON.parse(userData);
 
         console.log('UserD: ', storedUser);
