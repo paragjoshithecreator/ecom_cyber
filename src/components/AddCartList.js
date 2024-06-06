@@ -1,9 +1,5 @@
 import axios from 'axios';
-import {
-  useFocusEffect,
-  useNavigation,
-  useRoute,
-} from '@react-navigation/native';
+import {useNavigation, useRoute} from '@react-navigation/native';
 import SearchBar from './SearchBar';
 import Loader from './Loader';
 import ModalFilter from './ModalFilter';
@@ -19,7 +15,6 @@ import {
   Modal,
 } from 'react-native';
 import ShopButton from './ShopButton';
-import PrimaryButton from './PrimaryButton';
 import {useIsFocused} from '@react-navigation/native';
 
 export default function AddCartList({listRef}) {
@@ -48,7 +43,6 @@ export default function AddCartList({listRef}) {
       );
 
       const result = await response.data.productData;
-      console.log(result);
       /* const final = await result.filter(
         item => item.category === selectedProduct,
       );*/

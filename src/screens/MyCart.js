@@ -19,7 +19,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {Dropdown} from 'react-native-element-dropdown';
 
 const data = [
-  {label: '1', value: '1'},
+  {label: 'ABHI', value: '1'},
   {label: '2', value: '2'},
   {label: '3', value: '3'},
   {label: '4', value: '4'},
@@ -33,8 +33,10 @@ export default function MyCart() {
   const [product, setProduct] = useState([]);
   const [token, setToken] = useState('');
   const [totalPrice, setTotalPrice] = useState('');
-  const [value, setValue] = useState(null);
+  const [value, setValue] = useState(quantity);
   const [isFocus, setIsFocus] = useState(false);
+  const [quantity, setQuantity] = useState('');
+  console.log(quantity);
 
   const products = async () => {
     const userToken = await AsyncStorage.getItem('userToken');
@@ -55,7 +57,8 @@ export default function MyCart() {
       setLoading(false);
       const result = await response.data.cart.products;
       const totalPrice = await response.data.cart.total;
-      console.log('OUR RESPONSE', response.data.cart);
+      console.log('OUR RESPONSE', response.data.cart.products);
+
       setProduct(result);
       setTotalPrice(totalPrice);
     } catch (error) {
@@ -127,16 +130,18 @@ export default function MyCart() {
                         title={removetoCart}
                         backgroundColor={'green'}
                       />
+                      {setQuantity(item.quantity)}
+                      <Text>{quantity}</Text>
                       <Dropdown
-                      placeholder='Qty'
+                        // placeholder="Qty"
                         style={{width: 50}}
                         selectedTextStyle={{color: 'green', fontSize: 16}}
-                        inputSearchStyle={{fontSize: 12, height: 120}}
                         data={data}
                         value={value}
                         labelField={'label'}
                         valueField="value"
-                        onChange={item => {
+                        onChange={(item, index) => {
+                          console.log(value);
                           setValue(item.value);
                           setIsFocus(false);
                         }}

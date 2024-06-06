@@ -1,3 +1,4 @@
+import Toast from 'react-native-toast-message';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import SliderIntro from 'react-native-slider-intro';
@@ -18,6 +19,22 @@ import {
   Image,
   useWindowDimensions,
 } from 'react-native';
+
+const showToasts = () => {
+  Toast.show({
+    type: 'success',
+    text1: 'You Liked 👍',
+    text2: 'Added To wishList!',
+  });
+};
+const showToastError = message => {
+  console.log(message);
+  Toast.show({
+    type: 'success',
+    text1: 'No Need to Like! ✋',
+    text2: message,
+  });
+};
 
 export default function ProductDetail() {
   const widthWindow = useWindowDimensions().width;
@@ -75,7 +92,7 @@ export default function ProductDetail() {
       const response = await axios.get(
         `https://e-com-cyber.onrender.com/product/getproduct/${producItemId}`,
       );
-
+      console.log('first', response, 'sec', response.data.productData);
       if (response && response.data.productData) {
         setProduct(response.data.productData);
         setId(response.data.productData._id);
@@ -152,7 +169,7 @@ export default function ProductDetail() {
       console.log(error);
     }
   }
-
+  // add to cart
   const addtoCartHnadler = async () => {
     const userToken = await AsyncStorage.getItem('userToken');
     try {
@@ -163,13 +180,39 @@ export default function ProductDetail() {
         {productId, image, price, description, quantity},
         {
           headers: {
-            authorization: `Bearer ${userToken}`, // Include token in the header
+            authorization: `Bearer ${userToken}`,
           },
         },
       );
       console.log(response);
     } catch (error) {
       console.error(error.response.data);
+    }
+  };
+
+  // add to wish list
+
+  const addProductToWishList = async () => {
+    const userToken = await AsyncStorage.getItem('userToken');
+    console.log(producItemId);
+    try {
+      const response = await axios.post(
+        `https://e-com-cyber.onrender.com/user/addtowishlist/${producItemId}`,
+        {},
+
+        {
+          headers: {
+            authorization: `Bearer ${userToken}`,
+          },
+        },
+      );
+      console.log(response);
+      showToasts();
+    } catch (error) {
+      console.error(error.response.data);
+      showToasts(error.response.data.message);
+      const message = error.response.data.message;
+      showToastError(message);
     }
   };
 
@@ -188,7 +231,7 @@ export default function ProductDetail() {
                   <TouchableOpacity
                     style={styles.backView}
                     onPress={() => {
-                      navigation.navigate('Explore');
+                      navigation.navigate('Auth');
                     }}>
                     <Image
                       style={{width: 24, height: 24, tintColor: 'red'}}
@@ -196,6 +239,7 @@ export default function ProductDetail() {
                     />
                   </TouchableOpacity>
                   <Image style={styles.image} source={{uri: item.image}} />
+                  <Toast />
                 </View>
 
                 <View style={styles.listView}>
@@ -247,7 +291,7 @@ export default function ProductDetail() {
                           source={require('../assets/img/share.png')}
                         />
                       </TouchableOpacity>
-                      <TouchableOpacity onPress={wishItems}>
+                      <TouchableOpacity onPress={addProductToWishList}>
                         <Image
                           style={{
                             marginRight: 10,
@@ -257,6 +301,10 @@ export default function ProductDetail() {
                           source={require('../assets/img/love.png')}
                         />
                       </TouchableOpacity>
+                      <LikeButton
+                        liked={Liked}
+                        onPress={Liked ? onUnLikePress : onLikePress}
+                      />
                     </View>
                   </View>
                   <Text

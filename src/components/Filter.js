@@ -13,14 +13,14 @@ export default function Filter() {
       <View style={styles.listView}>
         <AddCartList listRef={listRef} />
       </View>
-      <View style={styles.innerView}>
+      {/*  <View style={styles.innerView}>
         <AddButton
           title={'Back To Home'}
           onPress={() => {
             navigation.navigate('Home');
           }}
         />
-      </View>
+      </View> */}
     </View>
   );
 }
@@ -39,5 +39,6 @@ const styles = StyleSheet.create({
   listView: {
     backgroundColor: '#ccc',
     flex: 1,
+    paddingBottom: '30%',
   },
 });

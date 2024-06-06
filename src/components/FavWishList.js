@@ -1,5 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {useRoute} from '@react-navigation/native';
+import {useNavigation, useRoute} from '@react-navigation/native';
 import ModalCom from './ModalCom';
 import {strings} from '../language';
 import React, {useEffect, useState} from 'react';
@@ -11,11 +11,33 @@ import {
   FlatList,
   TouchableOpacity,
 } from 'react-native';
+import axios from 'axios';
 
 export default function FavWishList() {
   const route = useRoute();
   const [userFav, setUserFav] = useState([]);
   const [remove, setRemove] = useState(false);
+  const [productId, setProductId] = useState('');
+  const navigation = useNavigation();
+
+  const wishListHandler = async () => {
+    const userToken = await AsyncStorage.getItem('userToken');
+    try {
+      const response = await axios.get(
+        `https://e-com-cyber.onrender.com/user/getwishlist`,
+        {
+          headers: {
+            authorization: `Bearer ${userToken}`,
+          },
+        },
+      );
+      console.log(response.data.wish.products);
+      const productDetails = response.data.wish.products;
+      setUserFav(productDetails);
+    } catch (error) {
+      console.error(error.response.data);
+    }
+  };
 
   const userFavHandler = async () => {
     const favItemDetails = await AsyncStorage.getItem('favItemDetails');
@@ -28,8 +50,26 @@ export default function FavWishList() {
     }
   };
 
+  const removeItemFromWishList = async () => {
+    const userToken = await AsyncStorage.getItem('userToken');
+    console.log('IN the API', productId);
+    try {
+      const response = await axios.put(
+        `https://e-com-cyber.onrender.comr/user/removewishlist/${productId}`,
+        {
+          headers: {
+            authorization: `Bearer ${userToken}`,
+          },
+        },
+      );
+      console.log('delete response..', response);
+    } catch (error) {
+      console.error(error.response.data);
+    }
+  };
+
   useEffect(() => {
-    userFavHandler();
+    wishListHandler();
   }, []);
 
   const addToFav = async item => {
@@ -52,14 +92,20 @@ export default function FavWishList() {
           numColumns={2}
           data={userFav}
           renderItem={({item}) => (
-            <TouchableOpacity style={styles.spaceSection} onPress={() => {}}>
+            <TouchableOpacity
+              style={styles.spaceSection}
+              onPress={() => {
+                console.log('Send', item._id);
+                navigation.navigate('ProductDetail', {
+                  itemId: item.productId,
+                });
+              }}>
               <View style={styles.listView}>
                 <TouchableOpacity
-                  onPress={
-                    () => {
-                      setRemove(true);
-                    } /* removeFromFav(item.itemId) */
-                  }>
+                  onPress={() => {
+                    setProductId(item.productId);
+                    setRemove(true);
+                  }}>
                   <Image
                     style={styles.image}
                     source={require('../assets/img/delete.png')}
@@ -73,17 +119,18 @@ export default function FavWishList() {
                   {item.itemdescription}
                 </Text>
                 <Text style={[styles.rateList, {color: 'green'}]}>
-                  {productPrice} {item.itemPrice}
+                  {productPrice} {item.price}
                 </Text>
                 <Text style={{color: '#000'}}>{item._id}</Text>
               </View>
             </TouchableOpacity>
           )}
-          keyExtractor={item => item.itemId}
+          keyExtractor={item => item._id}
         />
       </View>
       <ModalCom
         onPressYes={() => {
+          removeItemFromWishList();
           setRemove(false);
         }}
         onPressNo={() => {

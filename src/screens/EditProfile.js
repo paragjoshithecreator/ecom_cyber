@@ -10,7 +10,6 @@ import {globalColor} from '../GlobalStyles';
 import React, {useEffect, useRef, useState} from 'react';
 import {View, Text, Image, TouchableOpacity, StyleSheet} from 'react-native';
 import PhoneInput from 'react-native-phone-number-input';
-import {Colors} from 'react-native/Libraries/NewAppScreen';
 
 export default function EditProfile() {
   const isFocused = useIsFocused();
@@ -37,9 +36,7 @@ export default function EditProfile() {
   //geting User details
   const userInfo = async () => {
     const userEarlierToken = await AsyncStorage.getItem('userToken');
-    console.log(typeof userEarlierToken, 'TYPE');
     setToken(userEarlierToken);
-    console.log('TOKEN', userEarlierToken);
     try {
       const response = await axios.get(
         'https://e-com-cyber.onrender.com/user/getuser',
@@ -108,6 +105,7 @@ export default function EditProfile() {
             source={require('../assets/img/back.png')}
           />
         </TouchableOpacity>
+        <Toast />
         <Text style={styles.nameText}>{welcome}</Text>
         <Text style={styles.nameText}>{userName}</Text>
         <Toast />
@@ -124,7 +122,7 @@ export default function EditProfile() {
         <Text>{emailPlaceHolder}</Text>
         <Input
           placeholder={emailPlaceHolder}
-        keyboardType={'email-address'}
+          keyboardType={'email-address'}
           onChangeText={txt => {
             setEmail(txt);
           }}
