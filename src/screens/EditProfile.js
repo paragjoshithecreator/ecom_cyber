@@ -1,4 +1,6 @@
 import axios from 'axios';
+import ImagePicker from 'react-native-image-crop-picker';
+import RNFS from 'react-native-fs';
 import {useIsFocused} from '@react-navigation/native';
 import Toast from 'react-native-toast-message';
 import {useNavigation} from '@react-navigation/native';
@@ -8,7 +10,14 @@ import AddButton from '../components/AddButton';
 import {strings} from '../language';
 import {globalColor} from '../GlobalStyles';
 import React, {useEffect, useRef, useState} from 'react';
-import {View, Text, Image, TouchableOpacity, StyleSheet} from 'react-native';
+import {
+  View,
+  Text,
+  Image,
+  TouchableOpacity,
+  StyleSheet,
+  ScrollView,
+} from 'react-native';
 import PhoneInput from 'react-native-phone-number-input';
 
 export default function EditProfile() {
@@ -22,8 +31,69 @@ export default function EditProfile() {
   const [value, setValue] = useState('');
   const [valid, setValid] = useState(false);
   const [formattedValue, setFormattedValue] = useState('');
+  const [profileImage, setProfileImage] = useState(null);
 
-  console.log('value', mobile);
+  useEffect(() => {
+    if (isFocused) {
+      loadImageFromAsyncStorage();
+    }
+  }, []);
+
+  const loadImageFromAsyncStorage = async () => {
+    try {
+      const savedImagePath = await AsyncStorage.getItem('profileImage');
+      if (savedImagePath !== null) {
+        const fileExists = await RNFS.exists(savedImagePath);
+        if (fileExists) {
+          setProfileImage({uri: `file://${savedImagePath}`});
+        } else {
+          console.log('File does not exist: ', savedImagePath);
+        }
+      }
+    } catch (error) {
+      console.log('AsyncStorage Error: ', error);
+    }
+  };
+
+  const showToastPic = () => {
+    Toast.show({
+      type: 'success',
+      text1: 'Profile Updated 👋',
+      text2: 'Your Profile Picture has Updated!',
+    });
+  };
+
+  const selectImage = () => {
+    ImagePicker.openPicker({
+      width: 300,
+      height: 300,
+      cropping: true,
+    })
+      .then(image => {
+        const source = {uri: image.path};
+        setProfileImage(source);
+        saveImageToLocalStorage(image.path);
+      })
+      .catch(error => {
+        console.log('Image Picker Error: ', error);
+      });
+  };
+
+  const saveImageToLocalStorage = async imagePath => {
+    const fileName = imagePath.split('/').pop();
+    const destinationPath = `${RNFS.DocumentDirectoryPath}/${fileName}`;
+
+    try {
+      await RNFS.copyFile(imagePath, destinationPath);
+      await AsyncStorage.setItem('profileImage', destinationPath);
+      //   Alert.alert('Success', 'Image saved to local storage and AsyncStorage!');
+      setProfileImage({uri: `file://${destinationPath}`});
+      showToastPic();
+    } catch (error) {
+      console.log('File Save Error: ', error);
+      Alert.alert('Error', 'Failed to save image.');
+    }
+  };
 
   const showToast = () => {
     Toast.show({
@@ -67,6 +137,7 @@ export default function EditProfile() {
   useEffect(() => {
     if (isFocused) {
       userInfo();
+      loadImageFromAsyncStorage();
     }
   }, [isFocused]);
 
@@ -95,90 +166,126 @@ export default function EditProfile() {
     strings;
   return (
     <View style={styles.container}>
-      <View style={styles.innerContainer}>
-        <TouchableOpacity
-          onPress={() => {
-            navigation.navigate('Profile');
-          }}>
-          <Image
-            style={styles.image}
-            source={require('../assets/img/back.png')}
-          />
-        </TouchableOpacity>
-        <Toast />
-        <Text style={styles.nameText}>{welcome}</Text>
-        <Text style={styles.nameText}>{userName}</Text>
-        <Toast />
-      </View>
-      <View style={styles.editView}>
-        <Text>{namePlaceHolder}</Text>
-        <Input
-          placeholder={namePlaceHolder}
-          onChangeText={txt => {
-            setUserName(txt);
-          }}
-          value={userName}
-        />
-        <Text>{emailPlaceHolder}</Text>
-        <Input
-          placeholder={emailPlaceHolder}
-          keyboardType={'email-address'}
-          onChangeText={txt => {
-            setEmail(txt);
-          }}
-          value={email}
-        />
-        <Text>{'Mobile'}</Text>
-
-        <Input
-          placeholder={mobileplaceholder}
-          keyboardType={'numeric'}
-          onChangeText={txt => {
-            setMobile(txt);
-          }}
-          value={mobile}
-        />
-        <Text>{formattedValue}</Text>
-        <PhoneInput
-          placeholder={mobile}
-          countryPickerButtonStyle={{height: 60}}
-          containerStyle={{height: 60}}
-          textInputStyle={{height: 60}}
-          ref={phoneInput}
-          defaultValue={mobile}
-          defaultCode="IN"
-          layout="first"
-          onChangeText={text => {
-            setMobile(text);
-          }}
-          onChangeFormattedText={text => {
-            setFormattedValue(text);
-          }}
-          value={mobile}
-          withDarkTheme
-          withShadow
-          autoFocus
-        />
-
-        <Text>{'Address'}</Text>
-        <Input
-          placeholder={'enter address'}
-          onChangeText={txt => {
-            setAddress(txt);
-          }}
-          value={address}
-        />
-        <View style={styles.buttonView}>
-          <AddButton
+      <ScrollView>
+        <View style={styles.innerContainer}>
+          <TouchableOpacity
             onPress={() => {
               navigation.navigate('Profile');
+            }}>
+            <Image
+              style={styles.image}
+              source={require('../assets/img/back.png')}
+            />
+          </TouchableOpacity>
+          <Toast />
+          <View
+            style={{justifyContent: 'flex-end', alignItems: 'center'}}
+            onPress={selectImage}>
+            <Image
+              style={{
+                width: 100,
+                height: 100,
+                borderRadius: 50,
+                //alignSelf: 'center',
+              }}
+              source={
+                profileImage
+                  ? profileImage
+                  : require('../assets/img/profile.png')
+              }
+            />
+            <TouchableOpacity
+              style={{
+                width: 100,
+                height: 100,
+                position: 'absolute',
+                justifyContent: 'flex-end',
+              }}
+              onPress={selectImage}>
+              <Image
+                style={{
+                  width: 24,
+                  height: 24,
+                  alignSelf: 'flex-end',
+                }}
+                source={require('../assets/img/edit.png')}
+              />
+            </TouchableOpacity>
+          </View>
+          <Text style={styles.nameText}>{welcome}</Text>
+          <Text style={styles.nameText}>{userName}</Text>
+          <Toast />
+        </View>
+        <View style={styles.editView}>
+          <Text>{namePlaceHolder}</Text>
+          <Input
+            placeholder={namePlaceHolder}
+            onChangeText={txt => {
+              setUserName(txt);
             }}
-            title={'CANCEL'}
+            value={userName}
+          />
+          <Text>{emailPlaceHolder}</Text>
+          <Input
+            placeholder={emailPlaceHolder}
+            keyboardType={'email-address'}
+            onChangeText={txt => {
+              setEmail(txt);
+            }}
+            value={email}
+          />
+          <Text>{'Mobile'}</Text>
+
+          <Input
+            placeholder={mobileplaceholder}
+            keyboardType={'numeric'}
+            onChangeText={txt => {
+              setMobile(txt);
+            }}
+            value={mobile}
+          />
+          <Text>{formattedValue}</Text>
+          <PhoneInput
+            placeholder={mobile}
+            countryPickerButtonStyle={{height: 60}}
+            containerStyle={{height: 60}}
+            textInputStyle={{height: 60}}
+            ref={phoneInput}
+            defaultValue={mobile}
+            defaultCode="IN"
+            layout="first"
+            onChangeText={text => {
+              setMobile(text);
+            }}
+            onChangeFormattedText={text => {
+              setFormattedValue(text);
+            }}
+            value={mobile}
+            withDarkTheme
+            withShadow
+            autoFocus
           />
 
-          <AddButton onPress={updateUser} title={'SAVE'} />
+          <Text>{'Address'}</Text>
+          <Input
+            placeholder={'enter address'}
+            onChangeText={txt => {
+              setAddress(txt);
+            }}
+            value={address}
+          />
+          <View style={styles.buttonView}>
+            <AddButton
+              onPress={() => {
+                navigation.navigate('Profile');
+              }}
+              title={'CANCEL'}
+            />
+
+            <AddButton onPress={updateUser} title={'SAVE'} />
+          </View>
         </View>
-      </View>
+      </ScrollView>
     </View>
   );
 }
@@ -188,7 +295,7 @@ const styles = StyleSheet.create({
     backgroundColor: globalColor.white,
   },
   innerContainer: {
-    height: '15%',
+    //height: '20%',
     backgroundColor: '#AA336A',
   },
   image: {
@@ -200,6 +307,7 @@ const styles = StyleSheet.create({
     color: globalColor.white,
     fontSize: 18,
     fontWeight: '300',
+    marginBottom: 10,
   },
   editView: {
     marginVertical: 20,

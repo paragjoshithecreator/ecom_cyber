@@ -83,6 +83,7 @@ export default function ProductDetail() {
   const [image, setImage] = useState('');
   const [quantity, setQuantity] = useState('');
   const [description, setDescription] = useState(1);
+  const [liked, setLiked] = useState(false);
 
   const producItemId = route.params ? route.params.itemId : '';
 
@@ -207,6 +208,7 @@ export default function ProductDetail() {
         },
       );
       console.log(response);
+      setLiked(true);
       showToasts();
     } catch (error) {
       console.error(error.response.data);
@@ -231,7 +233,7 @@ export default function ProductDetail() {
                   <TouchableOpacity
                     style={styles.backView}
                     onPress={() => {
-                      navigation.navigate('Auth');
+                      navigation.goBack();
                     }}>
                     <Image
                       style={{width: 24, height: 24, tintColor: 'red'}}
@@ -285,26 +287,33 @@ export default function ProductDetail() {
                       {item.name}
                     </Text>
                     <View style={{flexDirection: 'row'}}>
-                      <TouchableOpacity onPress={onShare}>
+                      <TouchableOpacity
+                        onPress={() => {
+                          onShare(image);
+                        }}>
                         <Image
                           style={{marginRight: 10}}
                           source={require('../assets/img/share.png')}
                         />
                       </TouchableOpacity>
-                      <TouchableOpacity onPress={addProductToWishList}>
+                      <TouchableOpacity
+                        onPress={() => {
+                          setLiked(!liked);
+                          addProductToWishList();
+                        }}>
                         <Image
                           style={{
                             marginRight: 10,
                             width: 24,
                             height: 24,
                           }}
-                          source={require('../assets/img/love.png')}
+                          source={
+                            liked
+                              ? require('../assets/img/heart.png')
+                              : require('../assets/img/love.png')
+                          }
                         />
                       </TouchableOpacity>
-                      <LikeButton
-                        liked={Liked}
-                        onPress={Liked ? onUnLikePress : onLikePress}
-                      />
                     </View>
                   </View>
                   <Text

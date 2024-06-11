@@ -23,14 +23,18 @@ export const showToast = rating => {
     ToastAndroid.show(` 😢 ${rating} ⭐️ Rating`, ToastAndroid.LONG);
   }
 };
-export const onShare = async () => {
+export const onShare = async image => {
+  console.log(image);
   try {
     const result = await Share.share({
       message: 'Would You Like To Share...',
+      url: image,
     });
     if (result.action === Share.sharedAction) {
+      console.log('Shared with activity type: ', result.activityType);
       if (result.activityType) {
         // shared with activity type of result.activityType
+        console.log('Shared with activity type: ', result.activityType);
       } else {
         // shared
       }

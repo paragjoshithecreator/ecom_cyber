@@ -3,6 +3,7 @@ import React, {useEffect, useRef, useState} from 'react';
 import AddCartList from './AddCartList';
 import AddButton from './AddButton';
 import {useNavigation} from '@react-navigation/native';
+import {globalColor} from '../GlobalStyles';
 
 export default function Filter() {
   const listRef = useRef();
@@ -37,7 +38,7 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
   },
   listView: {
-    backgroundColor: '#ccc',
+    backgroundColor: globalColor.lightWhite,
     flex: 1,
     paddingBottom: '30%',
   },

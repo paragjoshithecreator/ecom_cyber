@@ -58,7 +58,7 @@ export default function Login({navigation}) {
           userAuth,
         );
         setLoading(false);
-        navigation.replace('DrawerNav');
+        navigation.replace('Authenticated');
         const userToken = response.data.token;
         await AsyncStorage.setItem('userToken', userToken);
       } catch (error) {

@@ -2,6 +2,7 @@ import {StyleSheet} from 'react-native';
 
 export const globalColor = {
   black: '#000000',
+  lightWhite: '#EDEADE',
   white: '#ffffff',
   dark: '#396',
   button: '#4682B4',

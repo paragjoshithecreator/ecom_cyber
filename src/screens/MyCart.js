@@ -130,9 +130,9 @@ export default function MyCart() {
                         title={removetoCart}
                         backgroundColor={'green'}
                       />
-                      {setQuantity(item.quantity)}
-                      <Text>{quantity}</Text>
-                      <Dropdown
+                      {/* {setQuantity(item.quantity)} */}
+                      {/* <Text>{quantity}</Text> */}
+                      {/* <Dropdown
                         // placeholder="Qty"
                         style={{width: 50}}
                         selectedTextStyle={{color: 'green', fontSize: 16}}
@@ -145,7 +145,7 @@ export default function MyCart() {
                           setValue(item.value);
                           setIsFocus(false);
                         }}
-                      />
+                      /> */}
                     </View>
                   </TouchableOpacity>
                 </View>
@@ -172,12 +172,13 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'space-between',
+    backgroundColor: globalColor.lightWhite,
   },
   innerContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     marginVertical: 10,
-    backgroundColor: '#fff',
+    backgroundColor: globalColor.white,
     marginHorizontal: 10,
     borderRadius: 9,
     elevation: 10,

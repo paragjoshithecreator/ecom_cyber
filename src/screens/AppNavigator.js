@@ -1,5 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {NavigationContainer} from '@react-navigation/native';
+import {NavigationContainer, useNavigation} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {createDrawerNavigator} from '@react-navigation/drawer';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
@@ -16,13 +16,13 @@ import {Image, TouchableOpacity, Text, View} from 'react-native';
 import ProductDetail from './ProductDetail';
 import Explore from './Explore';
 import MyCart from './MyCart';
-import ForgetPassSendEmail from './ForgetPassSendEmail';
 
 const Stack = createNativeStackNavigator();
 const Bottom = createBottomTabNavigator();
 const Drawer = createDrawerNavigator();
 
 const DrawerNav = () => {
+  const navigation = useNavigation();
   return (
     <Drawer.Navigator
       initialRouteName="DashBoard"
@@ -35,7 +35,9 @@ const DrawerNav = () => {
                 justifyContent: 'center',
                 alignItems: 'flex-end',
               }}
-              onPress={() => {}}>
+              onPress={() => {
+                navigation.navigate('MyCart');
+              }}>
               <View
                 style={{
                   width: 18,
@@ -85,9 +87,10 @@ const DrawerNav = () => {
   );
 };
 
-const Auth = () => {
+const BottomNavigation = () => {
   return (
     <Bottom.Navigator
+      initialRouteName="Home"
       screenOptions={{
         headerShown: false,
       }}>
@@ -179,6 +182,13 @@ const Auth = () => {
           tabBarActiveBackgroundColor: 'orange',
         }}
       />
+      <Bottom.Screen
+        name="WishList"
+        component={WishList}
+        options={() => ({
+          tabBarButton: () => null,
+        })}
+      />
     </Bottom.Navigator>
   );
 };
@@ -194,6 +204,44 @@ export default function AppNavigator() {
       console.log(err);
     }
   };
+  const Authenticated = () => {
+    return (
+      <Drawer.Navigator>
+        <Drawer.Screen
+          name="BottomNavigation"
+          component={BottomNavigation}
+          options={{title: 'E-Shop'}}
+        />
+
+        <Drawer.Screen
+          name="ProductDetail"
+          component={ProductDetail}
+          //options={{headerShown: false, drawerLabel: () => null}}
+        />
+        <Drawer.Screen
+          name="Unauthenticated"
+          component={Unauthenticated}
+          options={{drawerItemStyle: {display: 'none'}}}
+        />
+        <Drawer.Screen
+          name="EditProfile"
+          component={EditProfile}
+          options={{drawerItemStyle: {display: 'none'}}}
+        />
+      </Drawer.Navigator>
+    );
+  };
+
+  const Unauthenticated = () => {
+    return (
+      <Stack.Navigator>
+        <Stack.Screen name="LogIn" component={Login} />
+        <Stack.Screen name="SignUp" component={SignUp} />
+        <Stack.Screen name="Authenticated" component={Authenticated} />
+      </Stack.Navigator>
+    );
+  };
+
   useEffect(() => {
     const check = async () => {
       const isAuthenticated = await userToken();
@@ -204,34 +252,39 @@ export default function AppNavigator() {
 
   return (
     <NavigationContainer>
-      {token ? (
-        <DrawerNav />
-      ) : (
-        <Stack.Navigator initialRouteName="LogIn">
-          <Stack.Screen
-            name="SignUp"
-            component={SignUp}
-            options={{headerShown: false}}
-          />
-
-          <Stack.Screen
-            name="LogIn"
-            component={Login}
-            options={{headerShown: false}}
-          />
-          <Stack.Screen name="EditProfile" component={EditProfile} />
-          <Stack.Screen
-            name="DrawerNav"
-            component={DrawerNav}
-            options={{headerShown: false}}
-          />
-          <Stack.Screen
-            name="ForgetPassSendEmail"
-            component={ForgetPassSendEmail}
-            options={{title: 'Forgot Password'}}
-          />
-        </Stack.Navigator>
-      )}
+      {token ? <Authenticated /> : <Unauthenticated />}
     </NavigationContainer>
   );
 }
+/*
+{
+  token ? (
+    <DrawerNav />
+  ) : (
+    <Stack.Navigator initialRouteName="LogIn">
+      <Stack.Screen
+        name="SignUp"
+        component={SignUp}
+        options={{headerShown: false}}
+      />
+
+      <Stack.Screen
+        name="LogIn"
+        component={Login}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen name="EditProfile" component={EditProfile} />
+      <Stack.Screen
+        name="DrawerNav"
+        component={DrawerNav}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name="ForgetPassSendEmail"
+        component={ForgetPassSendEmail}
+        options={{title: 'Forgot Password'}}
+      />
+    </Stack.Navigator>
+  );
+}
+*/

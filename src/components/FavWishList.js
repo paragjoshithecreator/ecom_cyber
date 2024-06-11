@@ -161,7 +161,6 @@ const styles = StyleSheet.create({
   listView: {
     borderRadius: 10,
     width: 185,
-    // height: 200,
     backgroundColor: '#fff',
     marginHorizontal: 10,
     marginVertical: '2%',

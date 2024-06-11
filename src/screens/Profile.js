@@ -1,4 +1,8 @@
 import axios from 'axios';
+import Toast from 'react-native-toast-message';
+import {useIsFocused} from '@react-navigation/native';
+import ImagePicker from 'react-native-image-crop-picker';
+import RNFS from 'react-native-fs';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useNavigation} from '@react-navigation/native';
 import PrimaryButton from '../components/PrimaryButton';
@@ -13,20 +17,84 @@ import {
   Linking,
   ScrollView,
 } from 'react-native';
-import Toast from 'react-native-toast-message';
 import ProfileSetting from '../components/ProfileSetting';
 
 export default function Profile() {
+  const isFocused = useIsFocused();
   const navigation = useNavigation();
   const [token, setToken] = useState('');
   const [modelVisible, setModelVisible] = useState(false);
+  const [profileImage, setProfileImage] = useState(null);
+
+  useEffect(() => {
+    if (isFocused) {
+      loadImageFromAsyncStorage();
+    }
+  }, [isFocused]);
+
+  const loadImageFromAsyncStorage = async () => {
+    try {
+      const savedImagePath = await AsyncStorage.getItem('profileImage');
+      if (savedImagePath !== null) {
+        const fileExists = await RNFS.exists(savedImagePath);
+        if (fileExists) {
+          setProfileImage({uri: `file://${savedImagePath}`});
+        } else {
+          console.log('File does not exist: ', savedImagePath);
+        }
+      }
+    } catch (error) {
+      console.log('AsyncStorage Error: ', error);
+    }
+  };
+
+  const showToastPic = () => {
+    Toast.show({
+      type: 'success',
+      text1: 'Profile Updated 👋',
+      text2: 'Your Profile Picture has Updated!',
+    });
+  };
+
+  const selectImage = () => {
+    ImagePicker.openPicker({
+      width: 300,
+      height: 300,
+      cropping: true,
+    })
+      .then(image => {
+        const source = {uri: image.path};
+        setProfileImage(source);
+        saveImageToLocalStorage(image.path);
+      })
+      .catch(error => {
+        console.log('Image Picker Error: ', error);
+      });
+  };
+
+  const saveImageToLocalStorage = async imagePath => {
+    const fileName = imagePath.split('/').pop();
+    const destinationPath = `${RNFS.DocumentDirectoryPath}/${fileName}`;
+
+    try {
+      await RNFS.copyFile(imagePath, destinationPath);
+      await AsyncStorage.setItem('profileImage', destinationPath);
+      //   Alert.alert('Success', 'Image saved to local storage and AsyncStorage!');
+      setProfileImage({uri: `file://${destinationPath}`});
+      showToastPic();
+    } catch (error) {
+      console.log('File Save Error: ', error);
+      Alert.alert('Error', 'Failed to save image.');
+    }
+  };
 
   const clearToken = async () => {
     try {
       await AsyncStorage.removeItem('userToken');
       console.log('Token cleared successfully');
       setTimeout(() => {
-        navigation.navigate('LogIn');
+        const targetRoute = 'Login';
+        navigation.replace(targetRoute);
       }, 4000);
     } catch (error) {
       console.error('Error clearing token:', error);
@@ -65,8 +133,23 @@ export default function Profile() {
         <View style={styles.innerView}>
           <Image
             style={styles.image}
-            source={require('../assets/img/profile.png')}
+            source={
+              profileImage ? profileImage : require('../assets/img/profile.png')
+            }
           />
+          <TouchableOpacity
+            style={{justifyContent: 'flex-end', marginBottom: 10}}
+            onPress={selectImage}>
+            <Image
+              style={{
+                width: 24,
+                height: 24,
+                position: 'absolute',
+                alignSelf: 'flex-end',
+              }}
+              source={require('../assets/img/edit.png')}
+            />
+          </TouchableOpacity>
           <Text style={styles.name}>James Smith</Text>
         </View>
         <View style={styles.orderContainer}>
@@ -91,10 +174,8 @@ export default function Profile() {
         </View>
         <View style={styles.space}></View>
         <Toast />
-
         <Text style={styles.headings}>Accout Settings</Text>
         <View style={styles.spaceLiner}></View>
-
         <ProfileSetting
           onPress={() => {
             navigation.navigate('EditProfile');
@@ -111,7 +192,6 @@ export default function Profile() {
         <ProfileSetting onPress={() => {}} label={'Select Language'} />
         <ProfileSetting onPress={() => {}} label={'Select Language'} />
         <ProfileSetting onPress={() => {}} label={'Settings'} />
-
         <View style={styles.space}></View>
         <Text style={styles.headings}>My Activity</Text>
         <View style={styles.spaceLiner}></View>
@@ -127,7 +207,6 @@ export default function Profile() {
           }}
           label={'Contact'}
         />
-
         <PrimaryButton onPress={showToast}>LogOut</PrimaryButton>
         <ModalCom
           metaData={'want to delete'}
@@ -153,11 +232,13 @@ const styles = StyleSheet.create({
   },
   innerView: {
     flexDirection: 'row',
-    marginVertical: 10,
+    marginBottom: 10,
   },
   image: {
-    width: 50,
-    height: 50,
+    width: 100,
+    height: 100,
+    borderRadius: 50,
+    marginBottom: 10,
   },
   imageSetting: {
     width: 25,
