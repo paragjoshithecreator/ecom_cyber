@@ -26,11 +26,24 @@ export default function AddCartList({listRef}) {
 
   const [loading, setLoading] = useState(false);
   const [userData, setUserData] = useState([]);
-  const [data, setData] = useState([]);
+  const [defaultPro, setDefaultPro] = useState([]);
+  const [data, setData] = useState(null);
   const [isModelVisible, setisModelVisible] = useState(false);
   const [category, setCategory] = useState('');
   const [ind, setind] = useState(0);
   const isFocused = useIsFocused();
+
+  const userDataDefault = async () => {
+    try {
+      const response = await axios.get(
+        `https://fakestoreapi.com/products/category/jewelery`,
+      );
+      setData(response.data);
+      setLoading(false);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   const products = async _id => {
     setLoading(true);
@@ -50,8 +63,10 @@ export default function AddCartList({listRef}) {
       setProductData(result);
       setUserData(result);
       setData(result);
+      setDefaultPro(result);
       setLoading(false);
     } catch (error) {
+      setDefaultPro(defaultPro);
       console.error('Product:', error.message);
     }
   };
@@ -69,9 +84,14 @@ export default function AddCartList({listRef}) {
   };
   useEffect(() => {
     if (isFocused) {
-      products(_id);
+      console.log(data);
+      if (data) {
+        products(_id);
+      } else {
+        userDataDefault();
+      }
     }
-  }, [_id]);
+  }, [_id, isFocused]);
 
   const {
     sortHeading,
@@ -91,13 +111,7 @@ export default function AddCartList({listRef}) {
       <View>
         {loading ? null : (
           <View>
-            <View
-              style={{
-                flexDirection: 'row',
-                justifyContent: 'space-evenly',
-                alignItems: 'center',
-                marginTop: 5,
-              }}>
+            <View style={styles.searchView}>
               <SearchBar
                 onPress={() => {
                   setProduct('');
@@ -126,7 +140,7 @@ export default function AddCartList({listRef}) {
               initialScrollIndex={ind}
               data={data}
               renderItem={({item}) => (
-                <TouchableOpacity>
+                <TouchableOpacity style={{overflow: 'hidden'}}>
                   <TouchableOpacity
                     onPress={() => {
                       navigation.navigate('ProductDetail', {
@@ -149,7 +163,7 @@ export default function AddCartList({listRef}) {
                           {item.ratings}
                           {productRating}
                         </Text>
-                        <Text style={styles.rateList}>{item.ratingNumber}</Text>
+                        {/* <Text style={styles.rateList}>{item.rating.rate}</Text> */}
                       </View>
                       <View style={styles.rateView}>
                         <Text style={styles.heading}>
@@ -187,6 +201,9 @@ export default function AddCartList({listRef}) {
         ttob={sortTopToBottom}
         rating={sortByRating}
         image={modalImage}
+        onPressCancel={() => {
+          setisModelVisible(false);
+        }}
         onPressN={() => {
           let tempList = data.sort((a, b) => (a.name > b.name ? 1 : -1));
           setData(tempList);
@@ -229,6 +246,12 @@ const styles = StyleSheet.create({
     marginTop: 10,
     borderRadius: 10,
     elevation: 2,
+  },
+  searchView: {
+    flexDirection: 'row',
+    justifyContent: 'space-evenly',
+    alignItems: 'center',
+    marginVertical: 5,
   },
   listView: {
     padding: 10,

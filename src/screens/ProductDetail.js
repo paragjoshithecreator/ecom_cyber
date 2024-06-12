@@ -218,7 +218,7 @@ export default function ProductDetail() {
     }
   };
 
-  const {feedback} = strings;
+  const {feedback, productPrice} = strings;
   return (
     <View style={styles.root}>
       <FlatList
@@ -265,6 +265,18 @@ export default function ProductDetail() {
                       <Text style={{color: globalColor.blue}}>{feedback}</Text>
                     </TouchableOpacity>
                   </View>
+                  <Text
+                    style={[
+                      GlobalStyles.subHeading,
+                      {
+                        color: 'green',
+                        alignSelf: 'flex-end',
+                        marginRight: 10,
+                        marginBottom: 10,
+                      },
+                    ]}>
+                    {productPrice} {item.price}
+                  </Text>
                   <Text
                     style={[
                       GlobalStyles.subHeading,
@@ -366,6 +378,7 @@ const styles = StyleSheet.create({
     height: 300,
     width: 300,
     borderRadius: 10,
+    resizeMode: 'contain',
   },
   listView: {
     backgroundColor: globalColor.white,

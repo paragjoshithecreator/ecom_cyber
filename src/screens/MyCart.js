@@ -2,7 +2,7 @@ import axios from 'axios';
 import Loader from '../components/Loader';
 import ShopButton from '../components/ShopButton';
 import PrimaryButton from '../components/PrimaryButton';
-import {globalColor} from '../GlobalStyles';
+import {GlobalStyles, globalColor} from '../GlobalStyles';
 import {strings} from '../language';
 import React, {useEffect, useState} from 'react';
 
@@ -57,12 +57,11 @@ export default function MyCart() {
       setLoading(false);
       const result = await response.data.cart.products;
       const totalPrice = await response.data.cart.total;
-      console.log('OUR RESPONSE', response.data.cart.products);
 
       setProduct(result);
       setTotalPrice(totalPrice);
     } catch (error) {
-      console.error('Product:', error);
+      console.log('Product:', error);
     }
   };
   useEffect(() => {
@@ -98,10 +97,13 @@ export default function MyCart() {
     }
     return null;
   };
+  const {emptyProduct} = strings;
   return (
     <View style={styles.container}>
       {loading ? (
-        <Loader animating={loading} color={'red'} size={'large'} />
+        <Loader animating={loading} color={'red'} size={'large'} /> && (
+          <Text style={GlobalStyles.heading}>{emptyProduct}</Text>
+        )
       ) : (
         <View style={styles.container}>
           <FlatList

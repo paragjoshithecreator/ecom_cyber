@@ -3,6 +3,7 @@ import {globalColor} from '../GlobalStyles';
 import React, {useEffect, useState} from 'react';
 import {View, Text, FlatList, Image, StyleSheet, Pressable} from 'react-native';
 import {catData} from '../DummyData';
+import {useNavigation} from '@react-navigation/native';
 
 export default function CategoryItems() {
   useEffect(() => {
@@ -11,6 +12,7 @@ export default function CategoryItems() {
 
   const [product, setProduct] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const navigation = useNavigation();
 
   const products = async () => {
     try {
@@ -25,7 +27,6 @@ export default function CategoryItems() {
       console.error('Product:', error);
     }
   };
-  const [ispressed, setIspressed] = useState(false);
 
   return (
     <View>
@@ -35,8 +36,9 @@ export default function CategoryItems() {
           renderItem={({item, index}) => (
             <Pressable
               onPress={() => {
-                console.log('pressed');
-                setIspressed(true);
+                navigation.navigate('Explore', {
+                  productId: item.name,
+                });
               }}
               style={({pressed}) =>
                 pressed ? styles.bgColor : styles.container

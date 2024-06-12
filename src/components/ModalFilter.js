@@ -14,6 +14,7 @@ export default function ModalFilter({
   onRequestClose,
   animationType,
   title,
+  onPressCancel,
   onPressN,
   onPressB,
   onPressT,
@@ -33,7 +34,21 @@ export default function ModalFilter({
         animationType={animationType}>
         <View style={styles.root}>
           <View style={styles.innerContainer}>
-            <Text style={GlobalStyles.heading}>{title}</Text>
+            <View style={styles.innerFilterContainer}>
+              <View style={styles.filterRightView}>
+                <Image
+                  style={styles.imageFilter}
+                  source={require('../assets/img/filtericon.png')}
+                />
+                <Text style={GlobalStyles.heading}>{title}</Text>
+              </View>
+              <TouchableOpacity onPress={onPressCancel}>
+                <Image
+                  style={styles.imageFilter}
+                  source={require('../assets/img/clear.png')}
+                />
+              </TouchableOpacity>
+            </View>
             <View style={styles.removeView}>
               <TouchableOpacity style={styles.space} onPress={onPressN}>
                 <Text style={styles.removeText}>{name}</Text>
@@ -62,10 +77,18 @@ const styles = StyleSheet.create({
   innerContainer: {
     width: '100%',
     backgroundColor: globalColor.white,
-    justifyContent: 'space-evenly',
-    alignItems: 'center',
     borderRadius: 10,
     elevation: 20,
+    paddingHorizontal: 10,
+  },
+  innerFilterContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  filterRightView: {
+    flexDirection: 'row',
+    alignItems: 'center',
   },
   removeView: {
     justifyContent: 'center',
@@ -77,6 +100,7 @@ const styles = StyleSheet.create({
     tintColor: 'red',
     marginRight: 5,
   },
+  imageFilter: {width: 24, height: 24, marginRight: 10},
   space: {
     marginVertical: 5,
   },
@@ -84,6 +108,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '400',
     textAlign: 'left',
-    color: 'green',
+    color: globalColor.black,
   },
 });

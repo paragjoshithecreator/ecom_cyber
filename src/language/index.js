@@ -22,7 +22,7 @@ export const strings = {
   productDetails: 'Description',
   productPrice: '₹ ',
   productQty: ' In a Stoke',
-  productRating: ' (⭐️⭐️⭐️⭐️)',
+  productRating: ' (⭐️)',
   modalHeading: 'Do You Want To Delete!',
   modalMetaData: 'Remove From Wish List',
   buyNow: 'BUY NOW',
@@ -30,6 +30,7 @@ export const strings = {
   removetoCart: 'Remove',
   total: 'Total',
   feedback: 'reviews',
+  emptyProduct: 'No Product Added Yet🧐!',
 
   //filter
   sortHeading: 'Filter',

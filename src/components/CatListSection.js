@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import React from 'react';
+import {useNavigation} from '@react-navigation/native';
 
 export default function CatListSection({
   numColumns,
@@ -15,6 +16,7 @@ export default function CatListSection({
   margin,
   categoryData,
 }) {
+  const navigation = useNavigation();
   return (
     <View style={{flex: 1}}>
       <View
@@ -31,7 +33,13 @@ export default function CatListSection({
         data={categoryData}
         renderItem={({item}) => (
           <View style={styles.listView}>
-            <TouchableOpacity style={styles.productView}>
+            <TouchableOpacity
+              onPress={() => {
+                navigation.navigate('Explore', {
+                  productId: item.name,
+                });
+              }}
+              style={styles.productView}>
               <Image
                 source={{uri: item.image}}
                 style={{

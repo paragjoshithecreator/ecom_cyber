@@ -91,7 +91,6 @@ export default function EditProfile() {
       showToastPic();
     } catch (error) {
       console.log('File Save Error: ', error);
-      Alert.alert('Error', 'Failed to save image.');
     }
   };
 
