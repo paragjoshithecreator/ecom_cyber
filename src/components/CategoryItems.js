@@ -18,9 +18,9 @@ export default function CategoryItems() {
     try {
       setIsLoading(true);
       const response = await axios.get(
-        'https://e-com-cyber.onrender.com/category/getallcategory',
+        'https://dummyjson.com/products/categories',
       );
-      const Category = response.data.categoryData;
+      const Category = response.data;
       setProduct(Category);
       setIsLoading(false);
     } catch (error) {
@@ -44,7 +44,7 @@ export default function CategoryItems() {
                 pressed ? styles.bgColor : styles.container
               }>
               <Image
-                source={{uri: item.image}}
+                source={{uri: item.url}}
                 style={styles.image}
                 resizeMode="cover"
               />

@@ -10,6 +10,8 @@ export const globalColor = {
   gray700: '#221c30',
   accent500: '#e6b30b',
   orange: '#fb7200',
+  lightOrange: '#AA336A',
+  primaryOrange:'orange',
   green: 'green',
   blue: '#3498DB',
 };

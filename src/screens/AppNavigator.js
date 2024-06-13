@@ -16,6 +16,8 @@ import {Image, TouchableOpacity, Text, View} from 'react-native';
 import ProductDetail from './ProductDetail';
 import Explore from './Explore';
 import MyCart from './MyCart';
+import ForgetPassSendEmail from './ForgetPassSendEmail';
+import { globalColor } from '../GlobalStyles';
 
 const Stack = createNativeStackNavigator();
 const Bottom = createBottomTabNavigator();
@@ -100,16 +102,16 @@ const BottomNavigation = () => {
         options={{
           tabBarIcon: ({tintColor}) => (
             <Image
-              tintColor={'#AA336A'}
+              tintColor={'#000'}
               style={{width: 24, height: 24}}
               source={require('../assets/img/home.png')}
             />
           ),
-          tabBarInactiveTintColor: '#fff',
-          tabBarActiveTintColor: '#AA336A',
-          headerTintColor: 'red',
+          //tabBarInactiveTintColor: '#fff',
+          tabBarInactiveTintColor: '#5E5C5C',
+          tabBarActiveTintColor: '#000',
           tabBarInactiveBackgroundColor: '#fff',
-          tabBarActiveBackgroundColor: 'orange',
+          tabBarActiveBackgroundColor: globalColor.lightWhite,
         }}
       />
 
@@ -119,15 +121,15 @@ const BottomNavigation = () => {
         options={{
           tabBarIcon: ({tintColor}) => (
             <Image
-              tintColor={'#AA336A'}
+              tintColor={'#000'}
               style={{width: 24, height: 24}}
               source={require('../assets/img/explore.png')}
             />
           ),
-          tabBarInactiveTintColor: '#fff',
-          tabBarActiveTintColor: '#AA336A',
+          tabBarInactiveTintColor: '#5E5C5C',
+          tabBarActiveTintColor: '#000',
           tabBarInactiveBackgroundColor: '#fff',
-          tabBarActiveBackgroundColor: 'orange',
+          tabBarActiveBackgroundColor: globalColor.lightWhite,
         }}
       />
       <Bottom.Screen
@@ -136,15 +138,16 @@ const BottomNavigation = () => {
         options={{
           tabBarIcon: ({tintColor}) => (
             <Image
-              tintColor={'#AA336A'}
+              tintColor={'#000'}
               style={{width: 24, height: 24}}
               source={require('../assets/img/category.png')}
             />
           ),
-          tabBarInactiveTintColor: '#fff',
-          tabBarActiveTintColor: '#AA336A',
+          //tabBarInactiveTintColor: '#fff',
+          tabBarInactiveTintColor: '#5E5C5C',
+          tabBarActiveTintColor: '#000',
           tabBarInactiveBackgroundColor: '#fff',
-          tabBarActiveBackgroundColor: 'orange',
+          tabBarActiveBackgroundColor: globalColor.lightWhite,
         }}
       />
       <Bottom.Screen
@@ -153,15 +156,16 @@ const BottomNavigation = () => {
         options={{
           tabBarIcon: ({tintColor}) => (
             <Image
-              tintColor={'#AA336A'}
+              tintColor={'#000'}
               style={{width: 24, height: 24}}
               source={require('../assets/img/shop.png')}
             />
           ),
-          tabBarInactiveTintColor: '#fff',
-          tabBarActiveTintColor: '#AA336A',
+          // tabBarInactiveTintColor: '#fff',
+          tabBarInactiveTintColor: '#5E5C5C',
+          tabBarActiveTintColor: '#000',
           tabBarInactiveBackgroundColor: '#fff',
-          tabBarActiveBackgroundColor: 'orange',
+          tabBarActiveBackgroundColor: globalColor.lightWhite,
         }}
       />
 
@@ -171,17 +175,19 @@ const BottomNavigation = () => {
         options={{
           tabBarIcon: ({tintColor}) => (
             <Image
-              tintColor={'#AA336A'}
+              tintColor={'#000'}
               style={{width: 24, height: 24}}
               source={require('../assets/img/profile.png')}
             />
           ),
-          tabBarInactiveTintColor: '#fff',
-          tabBarActiveTintColor: '#AA336A',
+          //tabBarInactiveTintColor: '#fff',
+          tabBarInactiveTintColor: '#5E5C5C',
+          tabBarActiveTintColor: '#000',
           tabBarInactiveBackgroundColor: '#fff',
-          tabBarActiveBackgroundColor: 'orange',
+          tabBarActiveBackgroundColor: globalColor.lightWhite,
         }}
       />
+
       <Bottom.Screen
         name="WishList"
         component={WishList}
@@ -237,7 +243,15 @@ export default function AppNavigator() {
       <Stack.Navigator>
         <Stack.Screen name="LogIn" component={Login} />
         <Stack.Screen name="SignUp" component={SignUp} />
-        <Stack.Screen name="Authenticated" component={Authenticated} />
+        <Stack.Screen
+          name="Authenticated"
+          component={Authenticated}
+          options={{headerShown: false}}
+        />
+        <Stack.Screen
+          name="ForgetPassSendEmail"
+          component={ForgetPassSendEmail}
+        />
       </Stack.Navigator>
     );
   };

@@ -1,5 +1,6 @@
 import {View, Text, StyleSheet, FlatList, TouchableOpacity} from 'react-native';
 import React from 'react';
+import {GlobalStyles, globalColor} from '../GlobalStyles';
 
 export default function Notification() {
   const NotifyList = [
@@ -43,12 +44,12 @@ const styles = StyleSheet.create({
   list: {
     flex: 1,
     borderRadius: 10,
-    backgroundColor: '#ccc',
+    backgroundColor: 'green',
     paddingVertical: 5,
     paddingHorizontal: 10,
   },
   itemText: {
-    color: '#000',
+    color: '#fff',
     fontWeight: '500',
     fontSize: 14,
   },
