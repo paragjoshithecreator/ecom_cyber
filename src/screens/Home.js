@@ -30,7 +30,6 @@ const images = [
   'https://img.freepik.com/premium-photo/beautiful-indian-family-holding-shopping-bags-with-gifts-mall_250865-41.jpg',
   'https://store.storeimages.cdn-apple.com/4668/as-images.apple.com/is/mba15-m3-spacegray-gallery1-202402?wid=4000&hei=3074&fmt=jpeg&qlt=90&.v=1707262825030',
   'https://store.storeimages.cdn-apple.com/4668/as-images.apple.com/is/mba15-m3-spacegray-gallery5-202402?wid=4000&hei=3074&fmt=jpeg&qlt=90&.v=1707262826699',
-  
 ];
 
 export default function Home() {
@@ -57,7 +56,7 @@ export default function Home() {
 
   return (
     <View style={styles.mainContainer}>
-      <View style={styles.innerView}>
+      {/* <View style={styles.innerView}>
         <SearchBar
           placeholder="Search"
           onPress={() => {
@@ -74,30 +73,30 @@ export default function Home() {
             source={require('../assets/img/filter.png')}
           />
         </TouchableOpacity>
-      </View>
+      </View> */}
 
       <View style={styles.listView}>
         <Notification />
       </View>
-      
+
       <ScrollView>
         <View style={styles.spaceView}></View>
         <ServiceList />
         <FlatList
-        data={images}
-        renderItem={renderItem}
-        keyExtractor={(item, index) => index.toString()}
-        horizontal
-        pagingEnabled
-        showsHorizontalScrollIndicator={false}
-        ref={flatListRef}
-        onScrollToIndexFailed={info => {
-          flatListRef.current.scrollToIndex({
-            index: info.index,
-            animated: true,
-          });
-        }}
-      />
+          data={images}
+          renderItem={renderItem}
+          keyExtractor={(item, index) => index.toString()}
+          horizontal
+          pagingEnabled
+          showsHorizontalScrollIndicator={false}
+          ref={flatListRef}
+          onScrollToIndexFailed={info => {
+            flatListRef.current.scrollToIndex({
+              index: info.index,
+              animated: true,
+            });
+          }}
+        />
         <FreeShopView />
         <TrendingList />
       </ScrollView>
@@ -133,7 +132,7 @@ const styles = StyleSheet.create({
     paddingBottom: 10,
   },
   spaceView: {
-    backgroundColor: 'gray',
+    // backgroundColor: 'gray',
     height: 3,
   },
   saleText: {

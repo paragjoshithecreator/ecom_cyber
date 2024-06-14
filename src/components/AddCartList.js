@@ -177,14 +177,14 @@ export default function AddCartList({listRef}) {
                         ⬅️ 14 Days return available
                       </Text>
                     </View>
-                    <View
+                    {/*   <View
                       style={{alignItems: 'center', justifyContent: 'center'}}>
                       <ShopButton
                         onPress={() => {}}
                         title={addtocart}
                         backgroundColor={'green'}
                       />
-                    </View>
+                    </View> */}
                   </TouchableOpacity>
                 </TouchableOpacity>
               )}

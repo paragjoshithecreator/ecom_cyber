@@ -58,6 +58,7 @@ export default function MyCart() {
       const result = await response.data.cart.products;
       const totalPrice = await response.data.cart.total;
 
+      console.log(result);
       setProduct(result);
       setTotalPrice(totalPrice);
     } catch (error) {
@@ -119,7 +120,7 @@ export default function MyCart() {
                         <Text style={styles.nameText}>{item.category}</Text>
                         <Text style={styles.nameText}>{item.quantity}</Text>
                         <Text style={styles.priceText}>$ {item.price}</Text>
-                        <Text style={styles.priceText}>$ {item.name}</Text>
+                        {/* <Text style={styles.priceText}>$ {item.name}</Text> */}
                         <Text style={styles.nameText}>
                           {item.ratings}
                           {'⭐️'}

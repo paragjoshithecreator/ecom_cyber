@@ -18,10 +18,11 @@ export default function CategoryItems() {
     try {
       setIsLoading(true);
       const response = await axios.get(
-        'https://dummyjson.com/products/categories',
+        'https://e-com-cyber.onrender.com/category/getallcategory',
       );
-      const Category = response.data;
-      setProduct(Category);
+      const Category = response;
+      console.log(Category.data.categoryData);
+      setProduct(Category.data.categoryData);
       setIsLoading(false);
     } catch (error) {
       console.error('Product:', error);
@@ -35,16 +36,18 @@ export default function CategoryItems() {
           data={product}
           renderItem={({item, index}) => (
             <Pressable
-              onPress={() => {
+              onPress={()=>{}
+                /* () => {
                 navigation.navigate('Explore', {
                   productId: item.name,
                 });
-              }}
+              } */
+            }
               style={({pressed}) =>
                 pressed ? styles.bgColor : styles.container
               }>
               <Image
-                source={{uri: item.url}}
+                source={{uri: item.image}}
                 style={styles.image}
                 resizeMode="cover"
               />
