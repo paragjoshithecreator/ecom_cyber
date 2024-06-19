@@ -1,121 +1,70 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import {NavigationContainer, useNavigation} from '@react-navigation/native';
-import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import {createDrawerNavigator} from '@react-navigation/drawer';
+import * as React from 'react';
+import {NavigationContainer} from '@react-navigation/native';
+import {createStackNavigator} from '@react-navigation/stack';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
-
-import SignUp from './SignUp';
-import Login from './Login';
+import {createDrawerNavigator} from '@react-navigation/drawer';
+import LogIn from './LogIn';
+import Profile from './Profile';
 import Home from './Home';
 import WishList from './WishList';
 import AllCategories from './AllCategories';
-import EditProfile from './EditProfile';
-import Profile from './Profile';
-import React, {useEffect, useState} from 'react';
-import {Image, TouchableOpacity, Text, View} from 'react-native';
-import ProductDetail from './ProductDetail';
-import Explore from './Explore';
 import MyCart from './MyCart';
+import SignUp from './SignUp';
 import ForgetPassSendEmail from './ForgetPassSendEmail';
-import { globalColor } from '../GlobalStyles';
+import {globalColor} from '../GlobalStyles';
+import {Image, StyleSheet} from 'react-native';
+import Explore from './Explore';
 
-const Stack = createNativeStackNavigator();
-const Bottom = createBottomTabNavigator();
+// import {Ionicons} from '@expo/vector-icons';
+
+// Import screens
+
+// Create Stack, Bottom Tab, and Drawer navigators
+const Stack = createStackNavigator();
+const Tab = createBottomTabNavigator();
 const Drawer = createDrawerNavigator();
 
-const DrawerNav = () => {
-  const navigation = useNavigation();
+// Nested Stack for the Home Tab
+function HomeStackNavigator() {
   return (
-    <Drawer.Navigator
-      initialRouteName="DashBoard"
-      screenOptions={{
-        headerRight: () => {
-          return (
-            <TouchableOpacity
-              style={{
-                marginRight: 10,
-                justifyContent: 'center',
-                alignItems: 'flex-end',
-              }}
-              onPress={() => {
-                navigation.navigate('MyCart');
-              }}>
-              <View
-                style={{
-                  width: 18,
-                  height: 18,
-                  backgroundColor: 'red',
-                  justifyContent: 'center',
-                  alignItems: 'flex-end',
-                  borderRadius: 20,
-                }}>
-                <Text
-                  style={{
-                    color: '#FFF',
-                    alignSelf: 'center',
-                  }}>
-                  0
-                </Text>
-              </View>
-              <Image
-                style={{width: 24, height: 24, marginRight: 10}}
-                source={require('../assets/img/shop.png')}
-              />
-            </TouchableOpacity>
-          );
-        },
-      }}>
-      <Drawer.Screen
-        name="Auth"
-        component={Auth}
-        options={{headerTitleAlign: 'center', title: 'DashBoard'}}
-      />
-      <Drawer.Screen name="Home" component={Home} />
-      <Drawer.Screen name="Explore" component={Explore} />
-      <Drawer.Screen name="MyCart" component={MyCart} />
-      <Drawer.Screen name="WishList" component={WishList} />
-      <Drawer.Screen name="Profile" component={Profile} />
-      <Drawer.Screen
-        name="EditProfile"
-        component={EditProfile}
-        options={{headerShown: false, drawerLabel: () => null}}
-      />
-      <Drawer.Screen
-        name="ProductDetail"
-        component={ProductDetail}
-        options={{headerShown: false, drawerLabel: () => null}}
-      />
-    </Drawer.Navigator>
+    <Stack.Navigator screenOptions={{headerShown: false}}>
+      <Stack.Screen name="Home" component={Home} />
+      <Stack.Screen name="AllCategories" component={AllCategories} />
+      <Stack.Screen name="MyCart" component={MyCart} />
+    </Stack.Navigator>
   );
-};
+}
 
-const BottomNavigation = () => {
+// Bottom Tab Navigator
+function BottomTabNavigator() {
   return (
-    <Bottom.Navigator
-      initialRouteName="Home"
-      screenOptions={{
-        headerShown: false,
-      }}>
-      <Bottom.Screen
-        name="Home"
-        component={Home}
-        options={{
-          tabBarIcon: ({tintColor}) => (
-            <Image
-              tintColor={'#000'}
-              style={{width: 24, height: 24}}
-              source={require('../assets/img/home.png')}
-            />
-          ),
-          //tabBarInactiveTintColor: '#fff',
-          tabBarInactiveTintColor: '#5E5C5C',
-          tabBarActiveTintColor: '#000',
-          tabBarInactiveBackgroundColor: '#fff',
-          tabBarActiveBackgroundColor: globalColor.lightWhite,
-        }}
-      />
+    <Tab.Navigator screenOptions={{headerShown: false}}>
+      <Tab.Screen
+        name="HomeStack"
+        component={HomeStackNavigator}
+        options={
+          {
+            headerShown: false,
+            tabBarIcon: ({tintColor}) => (
+              <Image
+                tintColor={'#000'}
+                style={{width: 24, height: 24}}
+                source={require('../assets/img/home.png')}
+              />
+            ),
+            tabBarInactiveTintColor: 'plum',
+            tabBarInactiveTintColor: '#5E5C5C',
+            tabBarActiveTintColor: '#000',
+            tabBarInactiveBackgroundColor: '#fff',
+            tabBarActiveBackgroundColor: globalColor.lightWhite,
+          }
 
-      <Bottom.Screen
+          /* tabBarIcon: ({color, size}) => (
+            <Ionicons name="home" color={color} size={size} />
+          ), */
+        }
+      />
+      <Tab.Screen
         name="Explore"
         component={Explore}
         options={{
@@ -126,13 +75,14 @@ const BottomNavigation = () => {
               source={require('../assets/img/explore.png')}
             />
           ),
+          tabBarInactiveTintColor: 'plum',
           tabBarInactiveTintColor: '#5E5C5C',
           tabBarActiveTintColor: '#000',
           tabBarInactiveBackgroundColor: '#fff',
           tabBarActiveBackgroundColor: globalColor.lightWhite,
         }}
       />
-      <Bottom.Screen
+      <Tab.Screen
         name="AllCategories"
         component={AllCategories}
         options={{
@@ -143,33 +93,32 @@ const BottomNavigation = () => {
               source={require('../assets/img/category.png')}
             />
           ),
-          //tabBarInactiveTintColor: '#fff',
+          tabBarInactiveTintColor: 'plum',
           tabBarInactiveTintColor: '#5E5C5C',
           tabBarActiveTintColor: '#000',
           tabBarInactiveBackgroundColor: '#fff',
           tabBarActiveBackgroundColor: globalColor.lightWhite,
         }}
       />
-      <Bottom.Screen
+      <Tab.Screen
         name="MyCart"
         component={MyCart}
         options={{
           tabBarIcon: ({tintColor}) => (
             <Image
               tintColor={'#000'}
-              style={{width: 24, height: 24}}
+              style={styles.image}
               source={require('../assets/img/shop.png')}
             />
           ),
-          // tabBarInactiveTintColor: '#fff',
+          tabBarInactiveTintColor: 'plum',
           tabBarInactiveTintColor: '#5E5C5C',
           tabBarActiveTintColor: '#000',
           tabBarInactiveBackgroundColor: '#fff',
           tabBarActiveBackgroundColor: globalColor.lightWhite,
         }}
       />
-
-      <Bottom.Screen
+      <Tab.Screen
         name="Profile"
         component={Profile}
         options={{
@@ -180,125 +129,62 @@ const BottomNavigation = () => {
               source={require('../assets/img/profile.png')}
             />
           ),
-          //tabBarInactiveTintColor: '#fff',
+          tabBarInactiveTintColor: 'plum',
           tabBarInactiveTintColor: '#5E5C5C',
           tabBarActiveTintColor: '#000',
           tabBarInactiveBackgroundColor: '#fff',
           tabBarActiveBackgroundColor: globalColor.lightWhite,
         }}
       />
-
-      <Bottom.Screen
-        name="WishList"
-        component={WishList}
-        options={() => ({
-          tabBarButton: () => null,
-        })}
-      />
-    </Bottom.Navigator>
-  );
-};
-
-export default function AppNavigator() {
-  const [token, setToken] = useState(false);
-  const userToken = async () => {
-    try {
-      const userData = await AsyncStorage.getItem('userToken');
-      console.log('THis is Token', userData);
-      return userData;
-    } catch (err) {
-      console.log(err);
-    }
-  };
-  const Authenticated = () => {
-    return (
-      <Drawer.Navigator>
-        <Drawer.Screen
-          name="BottomNavigation"
-          component={BottomNavigation}
-          options={{title: 'E-Shop'}}
-        />
-
-        <Drawer.Screen
-          name="ProductDetail"
-          component={ProductDetail}
-          //options={{headerShown: false, drawerLabel: () => null}}
-        />
-        <Drawer.Screen
-          name="Unauthenticated"
-          component={Unauthenticated}
-          options={{drawerItemStyle: {display: 'none'}}}
-        />
-        <Drawer.Screen
-          name="EditProfile"
-          component={EditProfile}
-          options={{drawerItemStyle: {display: 'none'}}}
-        />
-      </Drawer.Navigator>
-    );
-  };
-
-  const Unauthenticated = () => {
-    return (
-      <Stack.Navigator>
-        <Stack.Screen name="LogIn" component={Login} />
-        <Stack.Screen name="SignUp" component={SignUp} />
-        <Stack.Screen
-          name="Authenticated"
-          component={Authenticated}
-          options={{headerShown: false}}
-        />
-        <Stack.Screen
-          name="ForgetPassSendEmail"
-          component={ForgetPassSendEmail}
-        />
-      </Stack.Navigator>
-    );
-  };
-
-  useEffect(() => {
-    const check = async () => {
-      const isAuthenticated = await userToken();
-      setToken(isAuthenticated);
-    };
-    check();
-  }, [token]);
-
-  return (
-    <NavigationContainer>
-      {token ? <Authenticated /> : <Unauthenticated />}
-    </NavigationContainer>
+    </Tab.Navigator>
   );
 }
-/*
-{
-  token ? (
-    <DrawerNav />
-  ) : (
+
+// Auth Navigator
+function Auth() {
+  return (
+    <Drawer.Navigator>
+      <Drawer.Screen
+        name="Main"
+        component={BottomTabNavigator}
+        options={{title: 'E-Shop'}}
+      />
+      <Drawer.Screen name="Profile" component={Profile} />
+    </Drawer.Navigator>
+  );
+}
+
+// Top-level stack navigator
+function AppNavigator() {
+  return (
     <Stack.Navigator initialRouteName="LogIn">
+      <Stack.Screen
+        name="LogIn"
+        component={LogIn}
+        options={{headerShown: false}}
+      />
       <Stack.Screen
         name="SignUp"
         component={SignUp}
         options={{headerShown: false}}
       />
-
-      <Stack.Screen
-        name="LogIn"
-        component={Login}
-        options={{headerShown: false}}
-      />
-      <Stack.Screen name="EditProfile" component={EditProfile} />
-      <Stack.Screen
-        name="DrawerNav"
-        component={DrawerNav}
-        options={{headerShown: false}}
-      />
       <Stack.Screen
         name="ForgetPassSendEmail"
         component={ForgetPassSendEmail}
-        options={{title: 'Forgot Password'}}
+      />
+      <Stack.Screen
+        name="Auth"
+        component={Auth}
+        options={{headerShown: false}}
       />
     </Stack.Navigator>
   );
 }
-*/
+export default AppNavigator;
+
+const styles = StyleSheet.create({
+  image: {
+    width: 24,
+    height: 24,
+  },
+});

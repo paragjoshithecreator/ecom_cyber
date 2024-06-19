@@ -93,7 +93,7 @@ export default function Profile() {
       await AsyncStorage.removeItem('userToken');
       console.log('Token cleared successfully');
       setTimeout(() => {
-        const targetRoute = 'Login';
+        const targetRoute = 'LogIn';
         navigation.replace(targetRoute);
       }, 4000);
     } catch (error) {

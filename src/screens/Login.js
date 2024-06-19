@@ -16,7 +16,7 @@ import {
   TouchableOpacity,
 } from 'react-native';
 
-export default function Login({navigation}) {
+export default function LogIn({navigation}) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [invalidEntryMessage, setInvalidEntryMessage] = useState('');
@@ -52,13 +52,12 @@ export default function Login({navigation}) {
       try {
         const storedUser = JSON.parse(userData);
 
-        console.log('UserD: ', storedUser);
         const response = await axios.post(
           'https://e-com-cyber.onrender.com/user/login',
           userAuth,
         );
         setLoading(false);
-        navigation.replace('Authenticated');
+        navigation.replace('Auth');
         const userToken = response.data.token;
         await AsyncStorage.setItem('userToken', userToken);
       } catch (error) {
@@ -145,7 +144,7 @@ export default function Login({navigation}) {
             style={{alignSelf: 'flex-end', marginRight: 10}}>
             <Text
               style={{
-                color: globalColor.black,
+                color: globalColor.button,
                 fontSize: 12,
               }}>
               {forgetPassword}
