@@ -20,7 +20,13 @@ import {
   useWindowDimensions,
 } from 'react-native';
 
-const showToasts = () => {
+const showToasts = cart => {
+  if (cart) {
+    Toast.show({
+      type: 'success',
+      text1: 'Add to Cart',
+    });
+  }
   Toast.show({
     type: 'success',
     text1: 'You Liked 👍',
@@ -186,6 +192,7 @@ export default function ProductDetail() {
         },
       );
       console.log(response);
+      showToasts('yes');
     } catch (error) {
       console.error(error.response.data);
     }

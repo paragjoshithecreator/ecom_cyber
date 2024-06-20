@@ -76,6 +76,8 @@ android {
     compileSdk rootProject.ext.compileSdkVersion
 
     namespace "com.eshopapp"
+
+
     defaultConfig {
         applicationId "com.eshopapp"
         minSdkVersion rootProject.ext.minSdkVersion

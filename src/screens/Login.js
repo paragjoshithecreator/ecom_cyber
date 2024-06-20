@@ -27,19 +27,6 @@ export default function LogIn({navigation}) {
   const [errorMessages, setErrorMessages] = useState('');
   const userInfor = useSelector(state => state.user.data);
 
-  //geting User details
-  const userEmail = async () => {
-    try {
-      const userEmail = await AsyncStorage.getItem('userData');
-      const storedEmail = JSON.parse(userEmail);
-      const finalEmail = storedEmail.email;
-      console.log('USERDATA', finalEmail);
-      //setEmailForget(finalEmail);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
   const loginHandler = async () => {
     setLoading(true);
     if (email !== '' && password !== '') {

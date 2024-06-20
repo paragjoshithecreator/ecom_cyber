@@ -45,6 +45,7 @@ function BottomTabNavigator() {
         options={
           {
             headerShown: false,
+            title: 'Home',
             tabBarIcon: ({tintColor}) => (
               <Image
                 tintColor={'#000'}
@@ -150,6 +151,7 @@ function Auth() {
         options={{title: 'E-Shop'}}
       />
       <Drawer.Screen name="Profile" component={Profile} />
+      <Drawer.Screen name="WishList" component={WishList} />
     </Drawer.Navigator>
   );
 }
